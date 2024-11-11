@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIGA Y MEGA CABLE SUR</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Incluir Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            background-color: #f0f0f0; /* Color de fondo para demostración */
+        }
+        header {
+            background-color: #000000;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 20px auto;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background-color: #000000; /* Color primario del menú */
+            color: #fff;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        nav ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        nav ul li {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        nav ul li a {
+            display: block;
+            padding: 12px 15px; /* Aumentar el padding para hacer más visible el área de clic */
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+        }
+        nav ul ul {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            background-color: #000000; /* Color secundario */
+            border-radius: 0 5px 5px 0;
+            width: 250px;
+            z-index: 1000;
+        }
+        nav ul ul li {
+            margin-bottom: 0;
+        }
+        nav ul li:hover > ul {
+            display: block;
+        }
+        .charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            flex: 3;
+            align-items: flex-start;
+            margin-left: 280px; /* Espacio adicional a la izquierda de los gráficos */
+        }
+        .chart-container {
+            width: calc(50% - 20px);
+            max-width: 400px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        canvas {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                margin: 10px;
+            }
+            nav {
+                position: static;
+                width: 100%;
+                margin-bottom: 20px;
+                border-radius: 5px;
+                box-shadow: none;
+            }
+            .charts-container {
+                align-items: center;
+                margin-left: 0; /* Alinear gráficos al centro en dispositivos móviles */
+            }
+            .chart-container {
+                width: 100%; /* Ocupa todo el ancho disponible en dispositivos móviles */
+            }
+        }
+
+        /* Estilos adicionales para botones */
+        .btn-custom {
+            background-color: #7952b3;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #5e3b8b;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GIGA & MEGA</h1> 
+       
+    </header>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#">CLIENTES</a>
+                    <ul>
+                        <li><a href="/users/agregar">Agregar Cliente</a></li>
+                        <li><a href="/users">Clientes/Pagos</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">ALMACEN</a>
+                    <ul>
+                        <li><a href="/almacen">Ingresar Almacén</a></li>
+                        <li><a href="/materiales">Materiales Almacen</a></li>
+                        <li><a href="/materialesIngreso">Fecha Ingreso Materiales</a></li>
+                        <li><a href="/entrega-materiales">Entrega Materiales</a></li>
+                        <li>
+                            
+                    
+                 
+                 </ul>
+                 
+                
+                <li><a href="/logout">CERRAR SESION</a></li>
+            </ul>
+        </nav>
+        <div class="charts-container">
+            <!-- Aquí van los gráficos -->
+        </div>
+    </div>
+</body>
+</html>
