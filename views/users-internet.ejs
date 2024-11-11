@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f2f2f2;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+     
+        .user-form {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .user-form button[type="button"],
+        .user-form input[type="submit"] {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #error-message {
+            margin-top: 10px;
+        }
+
+        body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    
+    form {
+      max-width: 420px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 3px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    
+    form h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 12px;
+      color: #666;
+      font-size: 15px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      width: 90%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    
+    textarea {
+      height: 100px;
+    }
+    
+    input[type="submit"] {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    input[type="submit"]:hover {
+      background-color: #555;
+    }
+
+    .hidden {
+        display: none;
+    }
+    header {
+      background-color: #e9e9e9;
+      color: #021894;
+      padding: 20px;
+    }
+    
+    h1 {
+      margin: 0;
+    }
+    
+    /* Navegación */
+nav {
+  background-color: #0477f1;
+  padding: 10px 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #0056b3;
+}
+</style>
+</head>
+<body>
+  <header>
+
+  </header>
+  
+  <nav>
+    <ul>
+      <li><a href="/menu">MENÚ</a></li>
+      
+      <!-- Agrega más elementos de lista según tus rutas -->
+    </ul>
+  </nav>
+</body>
+<div class="user-form">
+ 
+
+  <h1>Actualizar Datos Internet</h1></h1>
+  <form action="/servicios/actualizarInt" method="post">
+  <input type="hidden" name="user_id" value="<%= user.user_id %>">
+
+    
+        
+            
+            <label for="estado_internet">Agregar Internet:</label>
+            <select name="estado_internet" id="estado_internet">
+                <option value="">Seleccione...</option>
+                <option value="Act" <%= user.estado_internet === 'Act' ? 'selected' : '' %>>Activar</option>
+            </select>
+    
+            <p> </p><label for="tipo_servicio2">Tipo de servicio:</label>
+            <select name="tipo_servicio2" id="tipo_servicio2">
+                <option value="">Seleccione...</option>
+                <option value="Internet" <%= user.tipo_servicio2 === 'Internet' ? 'selected' : '' %>>Internet</option>
+            </select>
+    
+            <p> </p><label for="instalacion_int">Fecha Inscripción:</label>
+            <input type="date" name="instalacion_int" id="instalacion_int" value="<%= user.instalacion_int %>">
+    
+    <label for="velocidad">Velocidad:</label>
+<select name="velocidad" id="velocidad" onchange="actualizarPrecio()" required>
+  <option value="">Seleccione...</option>
+  <% velocidades.forEach(vel => { %>
+    <option value="<%= vel.velocidad %>" data-precio="<%= vel.precio %>"><%= vel.velocidad %></option>
+  <% }) %>
+</select>
+
+
+<p></p>
+            <label for="precio2">Mensualidad:</label>
+            <input type="number" name="precio2" id="precio2" readonly value="<%= user.precio2 %>">
+
+
+
+            <p></p>
+      <label for="inscripcion_internet">Inscripción Internet:</label>
+        <input type="number" name="inscripcion_internet" id="inscripcion_internet" step="0.01" value="0.00">
+
+        <label for="costo_materiales_internet">Costo Materiales Internet:</label>
+        <input type="number" name="costo_materiales_internet" id="costo_materiales_internet" step="0.01" value="0.00">
+          
+         
+          
+           <p></p>
+            
+            
+            
+            
+            
+            <label for="tipo_onu">Tipo de ONU:</label>
+            <select name="tipo_onu" id="tipo_onu">
+                <option value="">Seleccione...</option>
+                <option value="tplink" <%= user.tipo_onu === 'tplink' ? 'selected' : '' %>>TP-Link</option>
+                <option value="huawei" <%= user.tipo_onu === 'huawei' ? 'selected' : '' %>>Huawei</option>
+                <option value="fiberhome" <%= user.tipo_onu === 'fiberhome' ? 'selected' : '' %>>Fiberhome</option>
+                <option value="xpon" <%= user.tipo_onu === 'xpon' ? 'selected' : '' %>>XPON</option>
+                <option value="otro" <%= user.tipo_onu === 'otro' ? 'selected' : '' %>>Otro</option>
+            </select>
+    
+            <p></p>
+            <label for="MAC">MAC:</label>
+            <input type="text" id="MAC" name="MAC" value="<%= user.MAC %>">
+    
+            <label for="usuario">Usuario Wi-Fi:</label>
+            <input type="text" id="usuario" name="usuario" value="<%= user.usuario %>">
+    
+            <label for="contrasena">Contraseña Wi-Fi:</label>
+            <input type="text" id="contrasena" name="contrasena" value="<%= user.contrasena %>">
+    
+            <label for="ppp_name">PPP Name:</label>
+            <input type="text" id="ppp_name" name="ppp_name" value="<%= user.ppp_name %>">
+    
+            <label for="ppp_password">PPP Password:</label>
+            <input type="text" id="ppp_password" name="ppp_password" value="<%= user.ppp_password %>">
+    
+            <label for="nro_tarjeta">Número de Tarjeta:</label>
+            <select id="nro_tarjeta" name="nro_tarjeta">
+                <option value="">Seleccione...</option>
+                <option value="11" <%= user.nro_tarjeta === '11' ? 'selected' : '' %>>11</option>
+                <option value="12" <%= user.nro_tarjeta === '12' ? 'selected' : '' %>>12</option>
+                <option value="13" <%= user.nro_tarjeta === '13' ? 'selected' : '' %>>13</option>
+                <option value="14" <%= user.nro_tarjeta === '14' ? 'selected' : '' %>>14</option>
+                <option value="15" <%= user.nro_tarjeta === '15' ? 'selected' : '' %>>15</option>
+                <option value="16" <%= user.nro_tarjeta === '16' ? 'selected' : '' %>>16</option>
+            </select>
+    
+            <p></p>
+            <label for="nro_puerto">Número de Puerto:</label>
+            <select id="nro_puerto" name="nro_puerto">
+                <option value="">Seleccione...</option>
+                <option value="1" <%= user.nro_puerto === '1' ? 'selected' : '' %>>1</option>
+                <option value="2" <%= user.nro_puerto === '2' ? 'selected' : '' %>>2</option>
+                <option value="3" <%= user.nro_puerto === '3' ? 'selected' : '' %>>3</option>
+                <option value="4" <%= user.nro_puerto === '4' ? 'selected' : '' %>>4</option>
+                <option value="5" <%= user.nro_puerto === '5' ? 'selected' : '' %>>5</option>
+                <option value="6" <%= user.nro_puerto === '6' ? 'selected' : '' %>>6</option>
+                <option value="7" <%= user.nro_puerto === '7' ? 'selected' : '' %>>7</option>
+                <option value="8" <%= user.nro_puerto === '8' ? 'selected' : '' %>>8</option>
+                <option value="9" <%= user.nro_puerto === '9' ? 'selected' : '' %>>9</option>
+                <option value="10" <%= user.nro_puerto === '10' ? 'selected' : '' %>>10</option>
+                <option value="11" <%= user.nro_puerto === '11' ? 'selected' : '' %>>11</option>
+                <option value="12" <%= user.nro_puerto === '12' ? 'selected' : '' %>>12</option>
+                <option value="13" <%= user.nro_puerto === '13' ? 'selected' : '' %>>13</option>
+                <option value="14" <%= user.nro_puerto === '14' ? 'selected' : '' %>>14</option>
+                <option value="15" <%= user.nro_puerto === '15' ? 'selected' : '' %>>15</option>
+                <option value="16" <%= user.nro_puerto === '16' ? 'selected' : '' %>>16</option>
+            </select>
+    
+            <p></p>
+            <label for="descripcion_int">Descripción:</label>
+            <textarea name="descripcion_int" id="descripcion_int" rows="4" cols="50"><%= user.descripcion_int %></textarea>
+    
+            
+            <button type="submit" class="btn-submit">Actualizar Datos</button>
+        </div>
+    </form>
+
+    <div id="error-message" style="color: red;"></div>
+  </div>
+  
+  
+  
+  <script>
+  function actualizarPrecio() {
+    var select = document.getElementById("velocidad");
+    var precioSeleccionado = select.options[select.selectedIndex].getAttribute("data-precio");
+    document.getElementById("precio2").value = precioSeleccionado || "0";
+  }
+</script>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script>
+    function showSecondForm() {
+        document.getElementById('firstForm').classList.add('hidden');
+        document.getElementById('secondForm').classList.remove('hidden');
+        document.getElementById('thirdForm').classList.add('hidden');
+    }
+  
+    function showThirdForm() {
+      
+        document.getElementById('thirdForm').classList.remove('hidden');
+        document.getElementById('firstForm').classList.add('hidden');
+    }
+  
+    function showFirstForm() {
+        document.getElementById('secondForm').classList.remove('hidden');
+        document.getElementById('firstForm').classList.remove('hidden');
+        document.getElementById('thirdForm').classList.add('hidden');
+    }
+  </script>
+  
+  
+  
+  <script>
+    function generarEntradasDecos() {
+        var numDecos = document.getElementById('num_decos').value;
+        var decosContainer = document.getElementById('decos_container');
+        decosContainer.innerHTML = ''; // Limpiar el contenedor
+  
+        for (var i = 1; i <= numDecos; i++) {
+            var cardLabel = document.createElement('label');
+            cardLabel.setAttribute('for', 'card_number_' + i);
+            cardLabel.innerText = 'Card Number ' + i + ':';
+            decosContainer.appendChild(cardLabel);
+  
+            var cardInput = document.createElement('input');
+            cardInput.setAttribute('name', 'card_number_' + i);
+            cardInput.setAttribute('id', 'card_number_' + i);
+            decosContainer.appendChild(cardInput);
+  
+            var breakElement = document.createElement('br');
+            decosContainer.appendChild(breakElement);
+  
+            var stbLabel = document.createElement('label');
+            stbLabel.setAttribute('for', 'STB_id_' + i);
+            stbLabel.innerText = 'STB ID ' + i + ':';
+            decosContainer.appendChild(stbLabel);
+  
+            var stbInput = document.createElement('input');
+            stbInput.setAttribute('name', 'STB_id_' + i);
+            stbInput.setAttribute('id', 'STB_id_' + i);
+            decosContainer.appendChild(stbInput);
+  
+            var breakElement2 = document.createElement('br');
+            decosContainer.appendChild(breakElement2);
+  
+            var stbLabel = document.createElement('label');
+            stbLabel.setAttribute('for', 'nro_deco_' + i);
+            stbLabel.innerText = 'Nro Deco ' + i + ':';
+            decosContainer.appendChild(stbLabel);
+  
+            var stbInput = document.createElement('input');
+            stbInput.setAttribute('name', 'nro_deco_' + i);
+            stbInput.setAttribute('id', 'nro_deco_' + i);
+            decosContainer.appendChild(stbInput);
+  
+            var breakElement2 = document.createElement('br');
+            decosContainer.appendChild(breakElement2);
+  
+        }
+    }
+  </script>
+  
+  <script>
+    function validarFechaInstalacion() {
+        const fechaInstalacion = document.getElementById('fecha_instalacion').value;
+        const fechaActual = new Date();
+  
+        if (new Date(fechaInstalacion) > fechaActual) {
+            alert('La fecha de instalación no puede ser mayor que la fecha actual.');
+            return false; // Detener el envío del formulario
+        }
+  
+        return true; // Continuar con el envío del formulario
+    }
+  </script>
+  
+  <script>
+    function actualizarMensualidad() {
+        // Implementa la lógica para actualizar la mensualidad aquí
+    }
+  </script>
+  
+
+  
+  <script>
+  
+  function mostrarNodo() {
+      const direccion = document.getElementById('direccion').value.toLowerCase();
+      let nodo = document.getElementById('nodo');
+  
+      if (direccion.includes('sec 6')) {
+          nodo.value = 'nodo 1';
+      } else if (direccion.includes('sec 7')) {
+          nodo.value = 'nodo 2';
+      } else if (direccion.includes('sec 8')) {
+          nodo.value = 'nodo 3';
+      } else if (direccion.includes('sec 9')) {
+          nodo.value = 'nodo 4';
+      } else {
+          nodo.value = '';
+      }
+  }
+  
+  </script>
+  
+  
+  
+  
+  <script>
+    function actualizarMensualidad() {
+        const tipoServicio = document.getElementById('tipo_servicio').value;
+        const senal = document.getElementById('senal').value;
+        const decos = document.getElementById('num_decos').value;
+    
+        let mensualidad = 0;
+    
+        if (tipoServicio === 'Basico') {
+            mensualidad = 50.0;
+        } else if (tipoServicio === 'Comercio') {
+            mensualidad = 35.0;
+        }
+    
+        if (decos == 2) { // Si hay 2 decodificadores, ajustar el precio a 50
+            mensualidad = 50.0;
+        } else if (decos == 1) { // Si hay 1 decodificador, ajustar el precio a 35
+            mensualidad = 35.0;
+        } else if (senal === 'Digital' && decos > 2) {
+            mensualidad += (decos - 2) * 12.0;
+        }
+    
+        document.getElementById('precio').value = mensualidad.toFixed(2);
+    }
+    </script>
+  
+
+  

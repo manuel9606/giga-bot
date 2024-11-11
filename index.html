@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    
+    
+    <!-- Agregamos los estilos del carrusel -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    
+    <!-- Agregamos jQuery y el script del carrusel -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    
+   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<title>giga y mega - cable sur </title>
+
+<style>
+/* Estilos Generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.carousel-container {
+    width: 100%;
+   
+    overflow: hidden;
+    position: relative;
+}
+
+
+.carousel {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.post {
+    flex: 0 0 auto;
+    width: 100%;
+    display: none;
+}
+
+.post.active {
+    display: block;
+}
+
+.post img {
+    width: 20%;
+    height: auto;
+}
+
+.post h2 {
+    margin-top: 10px;
+}
+
+.post p {
+    margin-top: 5px;
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+/* Estilos CSS para darle formato a tu plantilla */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+    margin: 0;
+}
+
+header {
+    background: #fff;
+    color: #fff;
+    padding: px 0; /* Revisar este valor */
+    text-align: center;
+}
+
+nav.blanco {
+   background-color:#0B7BFE; 
+   color:#333; 
+}
+        
+nav {
+    display: flex;
+    justify-content: center;
+    background: #0B7BFE;
+    padding: 5px 0; /* Reducir el padding vertical */
+}
+
+  
+  nav a {
+    color: #fff;
+    padding: 0 5px;
+    text-decoration: none;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .container {
+    max-width: 100%; /* Ancho del 80% de la pantalla */
+    overflow: auto;
+    margin: auto;
+    padding: 0 20px;
+    margin-bottom: 100px;
+  }
+  
+  .poste {
+    background: #fff;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .poste img {
+    max-width: 200px;
+    height: auto;
+  }
+  
+  footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+  h1 {
+    color:#0B7BFE ;
+    padding: 5px;
+    text-align: center;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .pagination a {
+    color: #0B7BFE;
+    padding: 10px;
+    text-decoration: none;
+    border: 1px solid #0B7BFE;
+    margin: 0 5px;
+  }
+  
+  .pagination a.active {
+    background-color: #0B7BFE;
+    color: #fff;
+  }
+  
+  .leer-mas {
+    display: inline-block;
+    background-color: #0B7BFE;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+
+  .leer-mas:hover {
+    background-color: #085FB3;
+  }
+    
+  .slick-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%; /* Puedes ajustar esta altura según tus necesidades */
+}
+
+
+  .slick-slide img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Estilos para el texto y el botón dentro del carrusel */
+  .carousel-text {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    text-align: center;
+    color: #fff;
+    z-index: 1;
+  }
+
+  .carousel-text h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .carousel-text p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .carousel-button {
+    display: inline-block;
+    background-color: #0B7BFE;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+
+  .carousel-button:hover {
+    background-color: #085FB3;
+  }
+
+  .icon {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+
+  .post {
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .contenido {
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  /* Estilos para el nuevo contenedor */
+  .nuevo-contenedor {
+    background: #f9f9f9;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 1200px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+    .laser-container {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .laser-beam {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: rgba(0, 191, 255, 0.7); /* Color azul eléctrico */
+            animation: beam 3s linear forwards;
+        }
+
+        @keyframes beam {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+    body1 {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 15vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
+        }
+        
+         body3 {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 10vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body4 {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 25vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
+        }
+
+       /* Estilos para el texto y la línea láser en el encabezado */
+.text-container {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+        
+     
+
+        .linea-laser {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px; /* Grosor de la línea láser */
+    background-color: #FFEB00; /* Color amarillo */
+    animation: moverLinea 3s linear infinite; /* Animación de movimiento */
+}
+
+@keyframes moverLinea {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Animación de aumento de tamaño */
+@keyframes increaseSize {
+    0% {
+        font-size: 20px;
+    }
+    50% {
+        font-size: 100px; /* Tamaño máximo */
+    }
+    100% {
+        font-size: 20px;
+    }
+}
+
+/* Estilos para la promoción en dispositivos móviles */
+@media (max-width: 768px) {
+    .boton-promocion {
+        width: 100%; /* Ancho completo */
+    }
+}
+
+.servicios-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .servicio {
+            width: 48%; /* Ajusta este valor según sea necesario */
+            margin-bottom: 20px;
+        }
+        .servicio img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+     body2 {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 23vh; /* Aumentar la altura para que se muestre todo el botón */
+        background-color: black;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .boton-promocion {
+        background-color: #FFEB00; /* Color amarillo */
+        color: black; /* Color de texto */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        position: absolute; /* Establece posición absoluta */
+        top: 80%; /* Centra verticalmente */
+        left: 50%; /* Centra horizontalmente */
+        transform: translate(-50%, -50%); /* Centra completamente */
+    }
+
+    .boton-promocion:hover {
+        background-color: #FFD700; /* Cambio de color al pasar el cursor */
+    }
+
+    .open-modal-button {
+            background-color: #0041C2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
+/* Estilo para el icono del chatbot */
+df-messenger {
+    --df-messenger-bot-message: #b6b6b6;
+    --df-messenger-button-titlebar-color:  #47b5ff;
+    --df-messenger-chat-background-color: #fafafa;
+     --df-messenger-font-color: rgb(0, 0, 0);
+    --df-messenger-send-icon: #000000;
+    --df-messenger-user-message: #A7CE3F;
+    --df-messenger-chat-window-height: 600px;
+    --df-messenger-chat-window-width: 800px;
+    }
+
+</style>
+</head>
+<body>
+   <nav class="blanco">
+    <a href="https://www.facebook.com/cablesurtel" target="_blank">
+        <i class="fab fa-facebook-square icon"></i>
+    </a>
+    
+    <!-- Icono de Instagram -->
+    <a href="https://www.instagram.com/cablesurtel" target="_blank">
+        <i class="fab fa-instagram-square icon"></i>
+    </a>
+
+    <!-- Icono de Teléfono -->
+    <a href="tel:+51017194344">
+        <i class="fas fa-phone-square-alt icon"></i>
+    </a>
+
+    <!-- Icono de WhatsApp -->
+    <a href="https://wa.me/+51974063994" target="_blank">
+        <i class="fab fa-whatsapp-square icon"></i>
+    </a>
+
+    <!-- Icono de Correo -->
+    <a href="mailto:cablesurtel@hotmail.com.com">
+        <i class="fas fa-envelope-square icon"></i>
+    </a>
+    <a href="/login">Login</a>
+</nav>
+    
+    
+    
+    
+    <header>
+    <img src="logo_giga.png" alt="Descripción del logo" width="200" height="180">
+   
+</header>
+    
+    <body3>
+        <div class="text-container">100%<span style="animation: increaseSize 3s infinite;">FIBRA ÓPTICA</span></div>
+        <div class="linea-laser"></div> <!-- Línea láser -->
+    </body3>
+    
+    <nav>
+        <a href="#">Inicio</a>
+        <a href="#">Blog</a>
+        <a href="#">Contacto</a>
+        <a href="/formulario">CONTRATA AQUI</a>
+      
+
+    </nav>
+    
+  
+     
+     
+      <div class="carousel-container">
+     
+    <div class="slick-carousel">
+        <div>
+            <img src="WIFI-POST.png" alt="Descripción de la imagen">
+            <div class="carousel-text">
+               
+               
+                <a href="#" class="carousel-button">¡Leer más!</a>
+            </div>
+        </div>
+        <div>
+          
+         <img src="lag-tips-2.png" alt="Descripción de la imagen">
+            <div class="carousel-text">
+               
+               
+                <a href="#" class="carousel-button">¡Leer más!</a>
+            </div>
+        </div>
+  
+        
+        
+        
+    </div>
+</div> 
+
+<div class="servicios-container">
+  <div class="servicio">
+     
+      <h3>Servicio de Cable</h3>
+      <p>Disfruta de la mejor programación con nuestros paquetes de cable digital. Ofrecemos una gran variedad de canales en alta definición para toda la familia.</p>
+  </div>
+  <div class="servicio">
+
+      <h3>Servicio de Internet</h3>
+      <p>Conéctate con la velocidad de la fibra óptica. Navega, juega y trabaja sin interrupciones con nuestros planes de internet de alta velocidad.</p>
+  </div>
+</div>
+
+
+
+     <div class="poste">
+    <h2>Wi-Fi 2.4, 5 , 6 y 7 Diferencias </h2>
+        <img src="https://cablesurinternet.com/wp-content/uploads/2024/02/wifi.jpeg" alt="Descripción de la imagen">
+       <h4 style="font-weight: bold;">Descripción</h4>
+        <p>El Wi-Fi ha evolucionado a lo largo del tiempo, pasando por diferentes estándares como Wi-Fi 4, Wi-Fi 5 (también conocido como 802.11ac), Wi-Fi 6 (802.11ax) y, más recientemente, se ha empezado a hablar del Wi-Fi 7. Cada uno de estos estándares ha traído consigo mejoras significativas en términos de velocidad, ancho de banda, eficiencia y capacidad para manejar múltiples dispositivos conectados. Por ejemplo, el Wi-Fi 6 ofrece una mayor velocidad máxima de datos, una vida útil de la batería más larga, tecnología de acceso mejorada y un rendimiento más eficiente en áreas concurridas en comparación con el Wi-Fi 5. Además, el Wi-Fi 6 opera en las bandas de 2.4 GHz y 5 GHz, mientras que el Wi-Fi 7 está en desarrollo y se espera que ofrezca aún más mejoras en términos de velocidad y capacidad.</p>
+        <a href="https://ejemplo.com/articulo-completo" class="leer-mas">Leer más</a>
+   
+        
+    </div>
+       <div class="poste">
+ <h2>HFC vs FTTH Diferencias</h2>
+            <img src="https://cablesurinternet.com/wp-content/uploads/2024/02/vsredes.png" alt="Descripción de la imagen">
+             <h4 style="font-weight: bold;">Descripción</h4>
+            <p>Las diferencias entre FTTH (Fiber to the Home) y HFC (Hybrid Fiber Coaxial) radican en la forma en que la fibra óptica llega a los hogares. Con FTTH, la fibra óptica se extiende directamente hasta el hogar, lo que proporciona una conexión de alta velocidad y ancho de banda. Por otro lado, con HFC, la fibra óptica se extiende solo hasta un nodo, y desde allí, la conexión se realiza a través de un cable coaxial, lo que puede afectar la velocidad y estabilidad de la conexión. Mientras que FTTH ofrece una conexión más rápida y resistente, HFC puede ser más económica de implementar al aprovechar la infraestructura existente. Estas diferencias en la forma en que se despliega la fibra óptica tienen un impacto significativo en la calidad y la velocidad de la conexión a Internet.</p>
+             <a href="https://ejemplo.com/articulo-completo" class="leer-mas">Leer más</a>
+       
+    </div>
+
+     <div class="poste">
+         
+
+ <h2>La alta demanda del streaming y la importancia del internet por Fibra Óptica</h2>
+            <img src="https://cablesurinternet.com/wp-content/uploads/2024/02/streaming.jpeg" alt="Descripción de la imagen">
+            
+            <h4 style="font-weight: bold;">Descripción</h4>
+            
+            <p>La creciente demanda de servicios de streaming y la importancia del internet por fibra óptica están transformando la forma en que nos conectamos y consumimos contenido. La fibra óptica, al ofrecer velocidades ultrarrápidas y una conexión confiable, es fundamental para satisfacer esta demanda. Con el auge del streaming de video en alta definición, los juegos en línea y la proliferación de dispositivos conectados en el hogar, la fibra óptica se ha convertido en la columna vertebral de la conectividad moderna. Su capacidad para soportar la rápida transmisión de datos y la hiperconexión la posiciona como la infraestructura ideal para afrontar los desafíos de un mundo cada vez más interconectado.</p>
+            
+             <a href="https://ejemplo.com/articulo-completo" class="leer-mas">Leer más</a>
+            
+            
+        </div>
+        <div class="poste">
+            <h2>Lag: El Enemigo Invisible en los Videojuegos y Cómo Combatirlo</h2>
+            <img src="https://cablesurinternet.com/wp-content/uploads/2024/02/LAG.jpg" alt="Descripción de la imagen">
+             <h4 style="font-weight: bold;">Descripción</h4>
+            <p>El lag es uno de los mayores enemigos invisibles en los videojuegos en línea, y puede arruinar la experiencia de juego al causar retrasos y desconexiones. Combatir el lag es crucial para disfrutar de una experiencia de juego fluida y sin interrupciones. Una forma de hacerlo es asegurarse de tener una conexión a Internet de alta velocidad y baja latencia, preferiblemente a través de una conexión de fibra óptica. Además, es importante cerrar otras aplicaciones y programas que puedan estar utilizando ancho de banda y reducir la distancia entre el dispositivo y el enrutador Wi-Fi. También se pueden ajustar las configuraciones de calidad de video y audio en el juego para reducir la carga en la conexión a Internet.</p>
+               <a href="https://ejemplo.com/articulo-completo" class="leer-mas">Leer más</a>
+        </div>
+    </div>
+    
+
+    <body4>
+      <div class="text-container"> TV <span style="animation: increaseSize 3s infinite;">CABLE DIGITAL</span></div>
+      <a href="enlace-de-tu-promocion" class="boton-promocion">¡Obtener promoción!</a>
+      <div class="linea-laser"></div> <!-- Línea láser -->
+     
+  </body4>
+     
+
+    
+ <div class="poste">
+         
+
+            
+        </div>
+
+
+
+
+
+
+
+
+
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="CABLE SUR GIGA & MEGA PLUS TV SAC"
+  agent-id="d1db0dd3-035b-495a-83e8-3f2710f83391"
+  language-code="es"
+  
+   chat-icon="logo.png">
+  
+></df-messenger>
+
+
+
+
+
+
+
+
+
+<script>
+  window.onload = function() {
+    const posts = document.querySelectorAll('.post');
+    let currentPostIndex = 0;
+
+    function showPost(index) {
+      posts.forEach(post => post.classList.remove('active'));
+      posts[index].classList.add('active');
+    }
+
+    function nextPost() {
+      currentPostIndex = (currentPostIndex + 1) % posts.length;
+      showPost(currentPostIndex);
+    }
+
+    function prevPost() {
+      currentPostIndex = (currentPostIndex - 1 + posts.length) % posts.length;
+      showPost(currentPostIndex);
+    }
+
+    showPost(currentPostIndex);
+
+    setInterval(nextPost, 2000);
+
+    // Event listeners para los botones prev y next
+    document.querySelector('.prev').addEventListener('click', prevPost);
+    document.querySelector('.next').addEventListener('click', nextPost);
+  };
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('.slick-carousel').slick({
+            autoplay: true,
+            autoplaySpeed: 3000,
+            dots: true,
+            arrows: false,
+            infinite: true,
+            speed: 500,
+            fade: true,
+            cssEase: 'linear'
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

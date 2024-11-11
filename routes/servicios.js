@@ -188,6 +188,76 @@ router.get('/users/:userId/deudas', requireAuth, (req, res) => {
   
  
   
+  // Ruta GET para obtener los datos del servicio y mostrar el formulario de actualización
+router.get('/servicios/actualizarInt0/:id', requireAuth, async (req, res) => {
+    const servicioId = req.params.id;
+  
+    // Consulta SQL para obtener los datos del servicio desde la tabla servicios
+    const selectQuery = 'SELECT * FROM servicios WHERE user_id = ?';
+  
+    // Ejecutar la consulta a la base de datos
+    connection.query(selectQuery, servicioId, (error, results) => {
+      if (error) {
+        console.error('Error al obtener los datos del servicio:', error);
+        res.status(500).send('Error al obtener los datos del servicio');
+      } else {
+        // Comprobar si se encontraron resultados
+        if (results.length > 0) {
+          const user = results[0];
+          res.render('users-internet', { user: user }); // Pasa los datos del servicio a la plantilla
+        } else {
+          res.send('No se encontró ningún servicio con el ID especificado');
+        }
+      }
+    });
+  });
+  
+  
+  // Ruta GET para obtener los datos del servicio y las velocidades disponibles
+  router.get('/servicios/actualizarInt/:id', requireAuth, async (req, res) => {
+    const servicioId = req.params.id;
+  
+    // Consulta SQL para obtener los datos del servicio desde la tabla servicios
+    const selectServicioQuery = 'SELECT * FROM servicios WHERE user_id = ?';
+  
+    // Consulta SQL para obtener las velocidades disponibles desde la tabla velocidades
+    const selectVelocidadesQuery = 'SELECT velocidad, precio FROM velocidades';
+  
+    // Ejecutar ambas consultas en paralelo usando Promise.all
+    try {
+      const [servicioResults, velocidadesResults] = await Promise.all([
+        new Promise((resolve, reject) => {
+          connection.query(selectServicioQuery, servicioId, (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          });
+        }),
+        new Promise((resolve, reject) => {
+          connection.query(selectVelocidadesQuery, (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          });
+        })
+      ]);
+  
+      // Verificar si se encontraron resultados para el servicio
+      if (servicioResults.length > 0) {
+        const user = servicioResults[0];
+        res.render('users-internet', { user: user, velocidades: velocidadesResults });
+      } else {
+        res.send('No se encontró ningún servicio con el ID especificado');
+      }
+    } catch (error) {
+      console.error('Error al obtener los datos del servicio y las velocidades:', error);
+      res.status(500).send('Error al obtener los datos del servicio y las velocidades');
+    }
+  });
   
 
 
