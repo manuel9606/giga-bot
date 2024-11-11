@@ -1,0 +1,418 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+ /* Estilos específicos para el formulario */
+.custom-form {
+margin: 20px auto; /* Centrar el formulario horizontalmente */
+max-width: 400px;
+padding: 20px;
+background-color: #fff;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.custom-form input[type="hidden"],
+.custom-form button {
+display: block;
+width: 100%;
+padding: 10px;
+background-color: #007BFF;
+color: #fff;
+border: none;
+border-radius: 4px;
+font-size: 18px;
+cursor: pointer;
+}
+
+.custom-form button:hover {
+background-color: #0056b3;
+}
+  
+
+
+  .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal div {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.modal button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+  
+  header {
+    background-color: #e9e9e9;
+    color: #021894;
+    padding: 20px;
+  }
+  
+  h1 {
+    margin: 0;
+  }
+  
+  /* Navegación */
+nav {
+background-color: #0477f1;
+padding: 10px 0;
+}
+
+nav ul {
+list-style: none;
+display: flex;
+justify-content: center;
+}
+
+nav ul li {
+margin: 0 10px;
+}
+
+nav a {
+text-decoration: none;
+color: #fff;
+font-weight: bold;
+transition: color 0.3s;
+}
+
+nav a:hover {
+color: #0056b3;
+}
+
+  body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  th,
+  td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+  }
+
+  th {
+    font-weight: bold;
+    background-color: #e9ecef;
+  }
+
+  tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa;
+  }
+
+  .dataTables_wrapper {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 1rem;
+  }
+
+  .dataTables_filter {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .dataTables_filter label {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  .dataTables_filter input[type="search"] {
+    width: 300px;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 2px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+
+  .btn-pagar {
+    color: #ffffff;
+    background-color: #007bff;
+    border-color: #ffffff;
+  }
+
+  .btn-agregar {
+    color: #ffffff;
+    background-color: #018011;
+    border-color: #ffffff;
+  }
+  .btn-activar {
+    color: #ffffff;
+    background-color: #3700ff;
+    border-color: #ffffff;
+  }
+  .btn-cortar {
+    color: #ffffff;
+    background-color: #ff0000;
+    border-color: #ffffff;
+  }
+  .btn-ver {
+    color: #ffffff;
+    background-color: #00ccff;
+    border-color: #ffffff;
+  }
+  .btn-deuda{
+    color: #ffffff;
+    background-color: #8d006a;
+    border-color: #ffffff;
+  }
+
+   
+  .search {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.search input[type="text"] {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+
+.search button {
+  padding: 5px 10px;
+  background-color: #0477f1;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+
+      h1 {
+          font-size: 24px;
+          margin-bottom: 20px;
+          text-align: center;
+      }
+
+      .form-group {
+          margin-bottom: 20px;
+      }
+
+      label {
+          display: block;
+          font-size: 16px;
+          margin-bottom: 5px;
+      }
+
+      select,
+      input[type="date"] {
+          width: 100%;
+          padding: 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+      }
+
+      .btn-submit {
+          display: block;
+          width: 100%;
+          padding: 10px;
+          background-color: #007BFF;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          font-size: 18px;
+          cursor: pointer;
+      }
+
+      .btn-submit:hover {
+          background-color: #0056b3;
+      }
+
+      .btn-cortar-activar {
+    
+    color: #ffffff;
+    background-color: #94031b;
+    border-color: #c9c9c9;
+  }
+
+  .btn-actualizar {
+    
+    color: #ffffff;
+    background-color: #23b4e0;
+    border-color: #c9c9c9;
+  }
+
+  .btn-deudas {
+    
+    color: #ffffff;
+    background-color: #036800;
+    border-color: #c9c9c9;
+  }
+  
+   .btn-pagos {
+    
+    color: #ffffff;
+    background-color:#000000;
+    border-color: #c9c9c9;
+  }
+
+  .btn-estado {
+    
+    color: #ffffff;
+    background-color: #0140b4;
+    border-color: #c9c9c9;
+  }
+
+
+  .btn-historial {
+    
+    color: #ffffff;
+    background-color: #d60566;
+    border-color: #c9c9c9;
+  }
+
+  .btn-whats {
+    
+    color: #ffffff;
+    background-color: #05d644;
+    border-color: #c9c9c9;
+  }
+
+  .btn-custom {
+color: #fff;
+background-color: #4CAF50; /* Cambia el color de fondo a tu preferencia */
+border-color: #4CAF50; /* Cambia el color del borde a tu preferencia */
+}
+
+.btn-custom:hover {
+background-color: #45a049; /* Cambia el color de fondo al pasar el ratón por encima */
+border-color: #45a049; /* Cambia el color del borde al pasar el ratón por encima */
+}
+
+.btn-danger {
+color: #fff;
+background-color: #d9534f; /* Cambia el color de fondo a tu preferencia */
+border-color: #d9534f; /* Cambia el color del borde a tu preferencia */
+}
+
+.btn-danger:hover {
+background-color: #c9302c; /* Cambia el color de fondo al pasar el ratón por encima */
+border-color: #ac2925; /* Cambia el color del borde al pasar el ratón por encima */
+}
+
+
+
+#tablaContainer {
+width: 100%; /* Ancho del contenedor de la tabla */
+ border-collapse: collapse; /* Colapsar los bordes de la tabla para un aspecto más limpio */
+}
+
+#usersTable {
+width: 100%; /* Ancho de la tabla */
+border-collapse: collapse; /* Colapsar los bordes de la tabla para un aspecto más limpio */
+}
+
+#usersTable td, #usersTable th {
+padding: 8px; /* Espaciado interno de las celdas */
+text-align: left; /* Alineación del texto en las celdas */
+border: 1px solid #ddd; /* Borde de las celdas */
+}
+
+/* Ajustes adicionales según tus necesidades */
+
+  
+  
+   #formularioDeudaContainer {
+  display: none;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px; /* Agrega espaciado interno */
+  background-color: #f9f9f9; /* Color de fondo */
+  border: 1px solid #ddd; /* Borde del contenedor */
+  border-radius: 5px; /* Borde redondeado */
+}
+
+#formularioDeudaContainer form {
+  display: flex;
+  flex-direction: column;
+}
+
+#formularioDeudaContainer label {
+  margin-bottom: 10px; /* Espaciado inferior para etiquetas */
+}
+
+#formularioDeudaContainer select,
+#formularioDeudaContainer input[type="text"],
+#formularioDeudaContainer input[type="number"] {
+  width: 100%;
+  padding: 8px; /* Espaciado interno para campos de entrada */
+  margin-bottom: 10px; /* Espaciado inferior para campos de entrada */
+  border: 1px solid #ccc; /* Borde de los campos de entrada */
+  border-radius: 4px; /* Borde redondeado para campos de entrada */
+}
+
+#formularioDeudaContainer button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+ .small-button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+  
+  .hidden {
+  display: none;
+}
+ .btn-success {
+    background-color:#5E17EB; /* Color verde de éxito */
+    color: #fff; /* Texto blanco */
+    border: 1px solid #28a745;
+  }
+
+  
+
+  .btn-info {
+    background-color: #737373; /* Color azul claro de información */
+    color: #fff; /* Texto blanco */
+    border: 1px solid #17a2b8;
+  }
