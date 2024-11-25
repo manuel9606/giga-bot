@@ -4,7 +4,8 @@
   "main": "y",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "build": "echo 'No hay nada que construir en esta aplicación.'"
   },
   "keywords": [],
   "author": "manolo <mvaldiviezoj@autonoma.edu.pe>",
