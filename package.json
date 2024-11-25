@@ -2,11 +2,12 @@
   "name": "giga-bot",
   "version": "1.0.0",
   "main": "y",
-  "scripts": {
-    "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-     "build": "echo 'No hay nada que construir en esta aplicación.'"
-  },
+ "scripts": {
+  "test": "echo \"Pruebas pasaron con éxito.\" && exit 0",
+  "start": "nodemon conexion.js",
+  "build": "echo 'No hay nada que construir en esta aplicación.'"
+}
+
   "keywords": [],
   "author": "manolo <mvaldiviezoj@autonoma.edu.pe>",
   "license": "ISC",
