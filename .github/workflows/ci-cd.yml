@@ -1,3 +1,5 @@
+
+
 name: CI/CD Pipeline
 
 on:
@@ -37,7 +39,4 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-         
-      # - run: npm test
-
-
+          npm test  # Ejecuta los tests definidos en package.json
