@@ -1,33 +1,19 @@
 {
   "name": "giga-bot",
   "version": "1.0.0",
-<<<<<<< HEAD
   "main": "conexion.js",
   "scripts": {
     "start": "nodemon conexion.js",
-    "test": "echo \"Pruebas pasaron con éxito.\" && exit 0",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo 'No hay nada que construir en esta aplicación.'"
   },
-=======
-  "main": "y",
- "scripts": {
-  "test": "echo \"Pruebas pasaron con éxito.\" && exit 0",
-  "start": "nodemon conexion.js",
-  "build": "echo 'No hay nada que construir en esta aplicación.'"
-}
-
->>>>>>> 7b8dd09560a2dc66469c190055da714dd6219214
-  "keywords": [],
-  "author": "manolo <mvaldiviezoj@autonoma.edu.pe>",
-  "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
     "moment": "^2.30.1",
+    "mysql": "^2.18.1",
     "mysql2": "^3.11.4"
-  },
-  "private": false,
-  "devDependencies": {},
-  "description": ""
+  }
 }
