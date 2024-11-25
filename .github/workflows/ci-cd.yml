@@ -1,11 +1,7 @@
-name: CI/CD Workflow
+name: CI/CD Pipeline
 
-# Ejecuta el flujo cuando hay un push o pull request en la rama principal
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -13,35 +9,34 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: root
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Check out the code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Configure environment variables
-      run: echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/test_db" > .env
+      - name: Configurar variables de entorno
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          echo "Configuración lista"
 
-    - name: Run database migrations
-      run: npm run migrate # Configura este comando según tu ORM
-
-    - name: Run tests
-      run: npm test
+      - name: Build and Test
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          npm run build
+          npm test
 
