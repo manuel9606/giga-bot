@@ -20,6 +20,11 @@ app.set('views', path.join(__dirname, 'views')); // Ensure this points to your v
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('scripts', path.join(__dirname, 'scripts')); // Ensure this points to your views folder
+
+app.use(express.static('public'));
+
+app.use(express.static('scripts'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
@@ -49,7 +54,7 @@ app.use(session({
 
 
 
-
+//conexion.js
 
 const connection = require('./private/db');
 
@@ -172,7 +177,7 @@ app.get('/menu', requireAuth, async (req, res) => {
    
    
    
-   app.post('/dialogflow-webhook', (req, res) => {
+   app.post('/webhook', (req, res) => {
      // Verificar si la solicitud es válida y proviene de Dialogflow
      if (!req.body || !req.body.queryResult) {
        return res.status(400).send('Solicitud no válida');

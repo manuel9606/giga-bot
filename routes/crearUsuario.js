@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 
-
+const path = require('path');
 const ejs = require('ejs');
 
 const session = require('express-session');
@@ -12,9 +12,8 @@ const session = require('express-session');
 const moment = require('moment');
 
 
-const mysql = require('mysql');
 
-
+const mysql = require('mysql2');
 
 
 // Middleware de autenticación
@@ -28,23 +27,10 @@ function requireAuth(req, res, next) {
 
 
 
+//routes/crearusuario.js
 
+const connection = require('../private/db');
 
-
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST || '144.217.189.135',
-  user: process.env.DB_USER || 'cablesur_almacen',
-  password: process.env.DB_PASSWORD || '}k]PL,01!wzz',
-  database: process.env.DB_NAME || 'cablesur_ALMACEN'
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('Error al conectar a la base de datos: ' + err.stack);
-    return;
-  }
-  console.log('Conexión a la base de datos exitosa.');
-});
 
 
 

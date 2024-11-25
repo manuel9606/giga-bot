@@ -11,10 +11,10 @@ const session = require('express-session');
 
 const moment = require('moment');
 
+const path = require('path');
+const mysql = require('mysql2');
 
-const mysql = require('mysql');
-
-
+const bodyParser = require('body-parser');
 
 
 // Middleware de autenticación
@@ -28,24 +28,20 @@ function requireAuth(req, res, next) {
 
 
 
+const connection = require('../private/db');
+
+router.use(bodyParser.json());
 
 
+router.use(express.static(path.join(__dirname, 'views')));
 
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST || '144.217.189.135',
-  user: process.env.DB_USER || 'cablesur_almacen',
-  password: process.env.DB_PASSWORD || '}k]PL,01!wzz',
-  database: process.env.DB_NAME || 'cablesur_ALMACEN'
-});
 
-connection.connect((err) => {
-  if (err) {
-    console.error('Error al conectar a la base de datos: ' + err.stack);
-    return;
-  }
-  console.log('Conexión a la base de datos exitosa.');
-});
+router.use(express.static(path.join(__dirname, 'public')));
 
+
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(express.urlencoded({ extended: false }));
+router.use(express.json());
 
 
 
