@@ -1,12 +1,22 @@
 {
   "name": "giga-bot",
   "version": "1.0.0",
+<<<<<<< HEAD
   "main": "conexion.js",
   "scripts": {
     "start": "nodemon conexion.js",
     "test": "echo \"Pruebas pasaron con éxito.\" && exit 0",
     "build": "echo 'No hay nada que construir en esta aplicación.'"
   },
+=======
+  "main": "y",
+ "scripts": {
+  "test": "echo \"Pruebas pasaron con éxito.\" && exit 0",
+  "start": "nodemon conexion.js",
+  "build": "echo 'No hay nada que construir en esta aplicación.'"
+}
+
+>>>>>>> 7b8dd09560a2dc66469c190055da714dd6219214
   "keywords": [],
   "author": "manolo <mvaldiviezoj@autonoma.edu.pe>",
   "license": "ISC",
