@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 18
 
-      # Instalar dependencias (si es necesario)
+      # Instalar dependencias
       - name: Install dependencies
         run: npm install
 
@@ -31,21 +31,22 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          echo "Variables de entorno configuradas"
+        run: echo "Variables de entorno configuradas"
 
       # Construcción y pruebas (si aplican)
       - name: Build and Test
-        run: npm run build # Cambia este comando según tu proyecto
+        run: |
+          npm run build # Cambia este comando según tu proyecto
+          echo "Pruebas completadas"
 
       # Desplegar con FTP
       - name: Deploy to cPanel with FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.5.0 # Actualiza la versión según sea necesario
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          local-dir: ./ # Cambia si necesitas desplegar un subdirectorio específico
-          server-dir: /home/cablesur/cablesurinternet.com # Cambia según tu configuración de cPanel
+          local-dir: ./ # Cambia si necesitas subir un subdirectorio específico
+          server-dir: /home/cablesur/cablesurinternet.com # Ruta de destino en tu hosting
 
