@@ -39,14 +39,17 @@ jobs:
           npm run build # Cambia este comando según tu proyecto
           echo "Pruebas completadas"
 
-      # Desplegar con FTP
+      # Desplegar con FTP a cPanel
       - name: Deploy to cPanel with FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.5.0 # Actualiza la versión según sea necesario
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5 # Versión estable recomendada
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          local-dir: ./ # Cambia si necesitas subir un subdirectorio específico
-          server-dir: /home/cablesur/cablesurinternet.com # Ruta de destino en tu hosting
+          server: ${{ secrets.FTP_SERVER }}       # Dirección FTP de tu servidor
+          username: ${{ secrets.FTP_USERNAME }}   # Nombre de usuario FTP
+          password: ${{ secrets.FTP_PASSWORD }}   # Contraseña FTP
+          protocol: ftps                         # Usar FTPS para conexión segura
+          port: ${{ secrets.FTP_PORT }}           # Puerto FTP, asegúrate que esté configurado
+          local-dir: ./build                      # Cambia este directorio a donde están los archivos construidos
+          server-dir: /home/cablesur/cablesurinternet.com  # Cambia esta ruta según la ubicación en tu servidor cPanel
+          dry-run: false                         # Cambiar a true si solo deseas hacer una prueba sin subir los archivos
+
 
