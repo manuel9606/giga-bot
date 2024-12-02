@@ -48,8 +48,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}   # Contraseña FTP
           protocol: ftps                         # Usar FTPS para conexión segura
           port: ${{ secrets.FTP_PORT }}           # Puerto FTP, asegúrate que esté configurado
-          local-dir: ./build/                     # Directorio de salida de la construcción (debe terminar con "/")
-          server-dir: /public_html               # Cambia esta ruta según la ubicación en tu servidor cPanel
-          dry-run: false                         # Cambiar a true si solo deseas hacer una prueba sin subir los archivos
+          local-dir: ./                           # Si deseas desplegar todo el proyecto desde la raíz
+          server-dir: /home/cablesur/cablesurinternet.com               # Cambia esta ruta según la ubicación en tu servidor cPanel
+          dry-run: false
 
 
