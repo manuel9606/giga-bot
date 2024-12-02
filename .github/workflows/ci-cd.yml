@@ -49,7 +49,7 @@ jobs:
           protocol: ftps                         # Usar FTPS para conexión segura
           port: ${{ secrets.FTP_PORT }}           # Puerto FTP, asegúrate que esté configurado
                             # Si deseas desplegar todo el proyecto desde la raíz
-          server-dir: /home/cablesur/cablesurinternet.com               # Cambia esta ruta según la ubicación en tu servidor cPanel
+          server-dir: /home/cablesur/cablesurinternet.com/ # Cambia esta ruta según la ubicación en tu servidor cPanel
           dry-run: false
 
 
