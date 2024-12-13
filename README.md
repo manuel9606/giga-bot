@@ -8,12 +8,14 @@ Este sistema permite a los usuarios registrarse, iniciar sesión y acceder a un 
 
 ## Tecnologías utilizadas
 
-- **Node.js**: Entorno de ejecución de JavaScript del lado del servidor.
-- **Express**: Framework para construir aplicaciones web en Node.js.
-- **MySQL**: Sistema de gestión de bases de datos utilizado para almacenar información de usuarios y servicios.
-- **EJS**: Motor de plantillas para la generación dinámica de vistas HTML.
-- **Dialogflow**: Plataforma para crear chatbots que interactúan con los usuarios de manera conversacional.
-- **Session Management**: Gestión de sesiones con cookies para mantener el estado de autenticación del usuario.
+- **Node.js**: Plataforma para ejecutar JavaScript en el servidor.
+- **MySQL**: Base de datos relacional para almacenar la información de los usuarios y servicios.
+- **Express.js**: Framework para facilitar la creación de la API y el servidor web.
+- **Dialogflow**: Para integración de chatbots inteligentes.
+- **EJS**: Motor de plantillas para renderizar las vistas en el servidor.
+- **express-session**: Middleware para manejar sesiones de usuario.
+- **dotenv**: Para manejar variables de entorno y configurar de manera segura los detalles de conexión y otras configuraciones.
+- **Body-parser**: Middleware para procesar los datos de las solicitudes HTTP.
 
 ## Requisitos previos
 
