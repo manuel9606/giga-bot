@@ -35,12 +35,13 @@ const connection = require('../private/db');
 
 
 
-// Configuración de session
+
+
 router.use(session({
-  secret: 'tt52yy6re92*',
+  secret: process.env.SESSION_SECRET ,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Cambia a true si usas HTTPS
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 horas
 }));
 
 
