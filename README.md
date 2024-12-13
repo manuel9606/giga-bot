@@ -31,7 +31,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
 1. Clona este repositorio en tu máquina local:
 
     ```bash
-    git clone https://github.com/tuusuario/tu-repositorio.git
+    git clone https://github.com/manuel9606/giga-bot.git
     ```
 
 2. Navega al directorio del proyecto:
@@ -44,6 +44,9 @@ Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
 
     ```bash
     npm install
+
+    npm install express mysql dialogflow ejs express-session dotenv body-parser uuid
+
     ```
 
 4. Crea un archivo `.env` en el directorio raíz del proyecto y agrega tus variables de entorno:
