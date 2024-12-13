@@ -61,12 +61,12 @@ app.use(session({
 
 //conexion.js
 
-const connection = require('./private/db');
+const connection = require('../private/db');
 
-const usuarioRouter = require('./routes/crearUsuario'); // Ajusta la ruta según tu estructura
+const usuarioRouter = require('../routes/crearUsuario'); // Ajusta la ruta según tu estructura
 app.use('/', usuarioRouter);
 
-const serviciosRouter = require('./routes/servicios'); // Ajusta la ruta según tu estructura
+const serviciosRouter = require('../routes/servicios'); // Ajusta la ruta según tu estructura
 app.use('/', serviciosRouter);
 
 

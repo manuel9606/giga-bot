@@ -1,9 +1,9 @@
 {
   "name": "giga-bot",
   "version": "1.0.0",
-  "main": "conexion.js",
+  "main": "server/conexion.js",
   "scripts": {
-    "start": "nodemon conexion.js",
+   "start": "node server/conexion.js",
 
     "build": "echo 'No hay nada que construir en esta aplicación.'"
   },
