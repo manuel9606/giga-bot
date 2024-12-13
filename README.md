@@ -1,4 +1,4 @@
-# Proyecto de Autenticación y Servicios Web
+# IMPLEMENTACIÓN DE UN CHATBOT CON LA TECNOLOGÍA DIALOG FLOW  IA PARA LA ATENCIÓN DE  CLIENTES  EN LA EMPRESA “GIGA & MEGA PLUS TV S.A.C
 
 Este proyecto es una aplicación web desarrollada con Node.js, MySQL, JavaScript y Dialogflow. Permite gestionar usuarios, autenticar sesiones y ofrecer servicios de manera interactiva a través de un chatbot.
 
