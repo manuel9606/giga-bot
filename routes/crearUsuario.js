@@ -354,11 +354,32 @@ router.post('/users/agregar', requireAuth, (req, res) => {
 
 
 
+router.get('/deudasMensuales', requireAuth, async (req, res) => {
+  try {
+    // Aplicar adelantos en las deudas por usuario antes de obtener los datos de los usuarios
+   
+
+    const usersData = await fetchUsersData();
+    const deudasData = calculateUserDebts(usersData);
+
+    await insertAndCalculateDebts(deudasData);
+
+    res.render('usersTable', { data: deudasData });
+  } catch (error) {
+    console.error('Error al obtener deudas:', error);
+    res.status(500).send('Error al obtener las deudas');
+  }
+});
+
+
+
+
+
 router.get('/users', requireAuth, async (req, res) => {
   try {
     // Aplicar adelantos en las deudas por usuario antes de obtener los datos de los usuarios
     await aplicarAdelantosEnDeudasPorUsuario();
-    await eliminarDeudasPosterioresACortePorServicio();
+    await actualizarDeudasPosterioresACorte();
     await actualizarPrecioServicios();
 
 await actualizarNodoUsuariosYServicios();
@@ -367,7 +388,7 @@ await actualizarNodoUsuariosYServicios();
     const usersData = await fetchUsersData();
     const deudasData = calculateUserDebts(usersData);
 
-    await insertAndCalculateDebts(deudasData);
+   
 
     res.render('usersTable', { data: deudasData });
   } catch (error) {
@@ -604,78 +625,57 @@ async function aplicarAdelantosEnDeudasPorUsuario() {
 }
 
 
-async function eliminarDeudasPosterioresACortePorServicio() {
+async function actualizarDeudasPosterioresACorte() {
   try {
-    // Consulta para obtener los usuarios con estados y fechas de corte específicas para CATV e Internet
+    // Consulta para obtener los usuarios con estado 'Bt' (corte de servicio) y fechas de corte
     const usuariosConCorteQuery = `
-      SELECT user_id, corte_cable, corte_internet, estado_cable, estado_internet
+      SELECT user_id, corte_cable, corte_internet
       FROM servicios
       WHERE (estado_cable = 'Bt' AND corte_cable IS NOT NULL) 
-         OR (estado_internet = 'Bt' AND corte_internet IS NOT NULL)`;
+         OR (estado_internet = 'Bt' AND corte_internet IS NOT NULL)
+    `;
 
     const usuariosConCorte = await queryDatabase(usuariosConCorteQuery);
 
+    // Recorremos a cada usuario que tiene un corte de servicio
     for (const usuario of usuariosConCorte) {
       const userId = usuario.user_id;
 
-      if (usuario.estado_cable === 'Bt' && usuario.corte_cable) {
+      // Si el usuario tiene corte en CATV (cable)
+      if (usuario.corte_cable) {
         const fechaCorteCable = moment(usuario.corte_cable);
-        const obtenerDeudasCATVQuery = `
-          SELECT user_id, fecha_deuda, tipo_deuda
-          FROM deudas
-          WHERE user_id = ? AND fecha_deuda > ? AND tipo_deuda = 'catv'`;
 
-        const deudasCATV = await queryDatabase(obtenerDeudasCATVQuery, [userId, fechaCorteCable.toDate()]);
-
-        if (deudasCATV.length > 0) {
-          const insertarAuditoriaCATVQuery = `
-            INSERT INTO auditoria_deudas (user_id, fecha_deuda, tipo_deuda)
-            VALUES (?, ?, ?)`;
-
-          for (const deuda of deudasCATV) {
-            await queryDatabase(insertarAuditoriaCATVQuery, [deuda.user_id, deuda.fecha_deuda, deuda.tipo_deuda]);
-          }
-
-          const eliminarDeudasCATVQuery = `
-            DELETE FROM deudas
-            WHERE user_id = ? AND fecha_deuda > ? AND tipo_deuda = 'catv'`;
-
-          await queryDatabase(eliminarDeudasCATVQuery, [userId, fechaCorteCable.toDate()]);
-        }
+        // Actualizamos las deudas de CATV con fecha posterior a la fecha de corte
+        const actualizarDeudasCATVQuery = `
+          UPDATE deudas
+          SET deuda = 0
+          WHERE user_id = ? AND tipo_deuda = 'catv' AND fecha_deuda > ?
+        `;
+        
+        await queryDatabase(actualizarDeudasCATVQuery, [userId, fechaCorteCable.toDate()]);
       }
 
-      if (usuario.estado_internet === 'Bt' && usuario.corte_internet) {
+      // Si el usuario tiene corte en Internet
+      if (usuario.corte_internet) {
         const fechaCorteInternet = moment(usuario.corte_internet);
-        const obtenerDeudasInternetQuery = `
-          SELECT user_id, fecha_deuda, tipo_deuda
-          FROM deudas
-          WHERE user_id = ? AND fecha_deuda > ? AND tipo_deuda = 'internet'`;
 
-        const deudasInternet = await queryDatabase(obtenerDeudasInternetQuery, [userId, fechaCorteInternet.toDate()]);
+        // Actualizamos las deudas de Internet con fecha posterior a la fecha de corte
+        const actualizarDeudasInternetQuery = `
+          UPDATE deudas
+          SET deuda = 0
+          WHERE user_id = ? AND tipo_deuda = 'internet' AND fecha_deuda > ?
+        `;
 
-        if (deudasInternet.length > 0) {
-          const insertarAuditoriaInternetQuery = `
-            INSERT INTO auditoria_deudas (user_id, fecha_deuda, tipo_deuda)
-            VALUES (?, ?, ?)`;
-
-          for (const deuda of deudasInternet) {
-            await queryDatabase(insertarAuditoriaInternetQuery, [deuda.user_id, deuda.fecha_deuda, deuda.tipo_deuda]);
-          }
-
-          const eliminarDeudasInternetQuery = `
-            DELETE FROM deudas
-            WHERE user_id = ? AND fecha_deuda > ? AND tipo_deuda = 'internet'`;
-
-          await queryDatabase(eliminarDeudasInternetQuery, [userId, fechaCorteInternet.toDate()]);
-        }
+        await queryDatabase(actualizarDeudasInternetQuery, [userId, fechaCorteInternet.toDate()]);
       }
     }
 
-    console.log('Deudas eliminadas y registradas en auditoría exitosamente para servicios con fecha de corte.');
+    console.log('Deudas posteriores a la fecha de corte actualizadas correctamente.');
   } catch (error) {
-    console.error('Error al eliminar deudas posteriores a la fecha de corte:', error);
+    console.error('Error al actualizar deudas posteriores a la fecha de corte:', error);
   }
 }
+
 
 
 
@@ -762,6 +762,306 @@ async function actualizarNodoUsuariosYServicios() {
 
 
 
+router.get('/users/actualizarEstado/:id', requireAuth, async (req, res) => {
+  const userId = req.params.id;
+
+  // Consulta SQL para obtener los datos del usuario y servicios
+  const selectQuery = `
+    SELECT u.*, s.*
+    FROM users u
+    JOIN servicios s ON u.id = s.user_id
+    WHERE u.id = ?`;
+
+  // Ejecutar la consulta a la base de datos
+  connection.query(selectQuery, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener los datos del usuario:', error);
+      res.status(500).send('Error al obtener los datos del usuario');
+    } else {
+      // Comprobar si se encontraron resultados
+      if (results.length > 0) {
+        const user = results[0];
+        res.render('actualizarEstado', { user: user }); // Pasa los datos del usuario a la plantilla
+      } else {
+        res.send('No se encontró ningún usuario con el ID especificado');
+      }
+    }
+  });
+});
+
+
+const activarServicio = async (user_id, tipo_servicio, fecha_activacion, precio_servicio) => {
+  const fecha_activacion_moment = moment.utc(fecha_activacion).local('+05:00');
+  fecha_activacion_moment.locale('es');
+  const mes_deuda = fecha_activacion_moment.format('MMMM');
+  const dias_en_mes = fecha_activacion_moment.daysInMonth();
+  const dias_consumidos = dias_en_mes - fecha_activacion_moment.date();
+  const deuda = ((precio_servicio / dias_en_mes) * dias_consumidos).toFixed(1);
+
+  // Insertar una nueva entrada de deuda
+  const insertar_deuda_query = `
+    INSERT INTO deudas (user_id, fecha_deuda, mes_deuda, deuda, tipo_deuda)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  // Cambiar el tipo_deuda a 'catv' o 'internet'
+  const tipo_deuda = tipo_servicio;
+
+  const insertar_valores = [
+    user_id,
+    fecha_activacion,
+    mes_deuda,
+    deuda,
+    tipo_deuda
+   
+  ];
+
+  await new Promise((resolve, reject) => {
+    connection.query(insertar_deuda_query, insertar_valores, (error, results) => {
+      if (error) return reject(error);
+      resolve(results);
+    });
+  });
+};
+
+router.post('/users/actualizarEstado', async (req, res) => {
+  const {
+    user_id,
+   
+    tipo_servicios,
+    estados,
+    fecha_activacion_corte,
+    motivo
+  } = req.body;
+
+  try {
+    // Query to check current states
+    const checkStateQuery = `
+      SELECT estado_cable, estado_internet, precio AS precioCable, precio2 AS precioInternet
+      FROM servicios 
+      WHERE user_id = ?;
+    `;
+
+    const currentState = await new Promise((resolve, reject) => {
+      connection.query(checkStateQuery, [user_id], (error, results) => {
+        if (error) return reject(error);
+        resolve(results[0]);
+      });
+    });
+
+    // Verify if the service exists
+    if ((tipo_servicios === 'catv' && !currentState.estado_cable) ||
+        (tipo_servicios === 'internet' && !currentState.estado_internet)) {
+      return res.status(400).send('El servicio no existe.');
+    }
+
+    // Avoid updating to 'Bt' if already 'Bt'
+    if ((tipo_servicios === 'catv' && currentState.estado_cable === 'Bt') ||
+        (tipo_servicios === 'internet' && currentState.estado_internet === 'Bt')) {
+      if (estados === 'Bt') {
+        return res.status(400).send('El servicio ya está cortado.');
+      }
+    }
+
+    // Prepare the update query and values
+    const updateQuery = `
+      UPDATE servicios
+      SET
+        estado_cable = CASE WHEN ? = 'catv' THEN ? ELSE estado_cable END,
+        estado_internet = CASE WHEN ? = 'internet' THEN ? ELSE estado_internet END,
+        activacion_cable = CASE WHEN ? = 'Act' AND ? = 'catv' THEN ? ELSE activacion_cable END,
+        corte_cable = CASE WHEN ? = 'Bt' AND ? = 'catv' THEN ? ELSE corte_cable END,
+        activacion_internet = CASE WHEN ? = 'Act' AND ? = 'internet' THEN ? ELSE activacion_internet END,
+        corte_internet = CASE WHEN ? = 'Bt' AND ? = 'internet' THEN ? ELSE corte_internet END
+      WHERE user_id = ?;
+    `;
+
+    const updateValues = [
+      tipo_servicios, estados, // estado_cable
+      tipo_servicios, estados, // estado_internet
+      estados, tipo_servicios, fecha_activacion_corte, // activacion_cable
+      estados, tipo_servicios, fecha_activacion_corte, // corte_cable
+      estados, tipo_servicios, fecha_activacion_corte, // activacion_internet
+      estados, tipo_servicios, fecha_activacion_corte, // corte_internet
+      user_id
+    ];
+
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, updateValues, (error, results) => {
+        if (error) return reject(error);
+        resolve(results);
+      });
+    });
+
+    // Function to update debt
+    const actualizarDeuda = async (tipoServicio, fechaCorte) => {
+      const fechaInicioMes = moment(fechaCorte).startOf('month').format('YYYY-MM-DD');
+      const fechaFinMes = moment(fechaCorte).endOf('month').format('YYYY-MM-DD');
+
+      // Query to get existing debt for the month
+      const obtenerDeudaQuery = `
+        SELECT deuda, fecha_corte
+        FROM deudas 
+        WHERE user_id = ? AND tipo_deuda = ? AND fecha_deuda >= ? AND fecha_deuda <= ?
+      `;
+
+      const existingDebt = await new Promise((resolve, reject) => {
+        connection.query(obtenerDeudaQuery, [user_id, tipoServicio, fechaInicioMes, fechaFinMes], (error, results) => {
+          if (error) return reject(error);
+          resolve(results[0]);
+        });
+      });
+
+      if (existingDebt) {
+        // Calculate the new debt
+        const fechaInicioDeuda = moment(fechaInicioMes, 'YYYY-MM-DD');
+        const diasConsumidos = moment(fechaCorte).diff(fechaInicioDeuda, 'days') + 1;
+        const nuevaDeuda = ((existingDebt.deuda / fechaInicioDeuda.daysInMonth()) * diasConsumidos).toFixed(1);
+
+        // Update the existing debt
+        const updateDeudaQuery = `
+          UPDATE deudas
+          SET deuda = ?, fecha_corte = ?
+          WHERE user_id = ? AND tipo_deuda = ? AND fecha_deuda >= ? AND fecha_deuda <= ?
+        `;
+
+        await new Promise((resolve, reject) => {
+          connection.query(updateDeudaQuery, [nuevaDeuda, fechaCorte, user_id, tipoServicio, fechaInicioMes, fechaFinMes], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+          });
+        });
+      }
+
+      // Insert a new debt entry for service cut
+      const tipoDeudaCorte = tipoServicio === 'catv' ? 'reconexion-catv' : 'reconexion-int';
+      const nuevaDeudaCorteFecha = moment(fechaCorte).format('YYYY-MM-DD');
+      const nuevaDeudaCorteMes = moment(fechaCorte).locale('es').format('MMMM');
+      let nuevaDeudaCorteMonto = 15.00; // Default amount for 'deuda' or 'otro' motivo
+
+      if (motivo === 'solicitud' || motivo === 'viaje') {
+        nuevaDeudaCorteMonto = 0; // Set the amount to 0 for 'solicitud' o 'viaje'
+      }
+
+      const insertDeudasCorteQuery = `
+        INSERT INTO deudas (user_id, fecha_deuda, mes_deuda, deuda, tipo_deuda)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+
+      const insertCorteValues = [
+        user_id,
+        nuevaDeudaCorteFecha,
+        nuevaDeudaCorteMes,
+        nuevaDeudaCorteMonto,
+        tipoDeudaCorte
+        
+      ];
+
+      await new Promise((resolve, reject) => {
+        connection.query(insertDeudasCorteQuery, insertCorteValues, (error, results) => {
+          if (error) return reject(error);
+          resolve(results);
+        });
+      });
+    }
+
+    // If the state is 'Bt'
+    if (estados === 'Bt') {
+      if (tipo_servicios === 'catv') {
+        await actualizarDeuda('catv', fecha_activacion_corte);
+      } else if (tipo_servicios === 'internet') {
+        await actualizarDeuda('internet', fecha_activacion_corte);
+      }
+    }
+
+    // If the state is 'Act'
+    if (estados === 'Act') {
+      if (tipo_servicios === 'catv') {
+        await activarServicio(user_id, 'catv', fecha_activacion_corte,  currentState.precioCable);
+      } else if (tipo_servicios === 'internet') {
+        await activarServicio(user_id, 'internet', fecha_activacion_corte, currentState.precioInternet);
+      }
+    }
+
+   
+   
+
+    // Insert into estados table
+    if (fecha_activacion_corte) {
+      const insertEstadosQuery = `
+        INSERT INTO estados (user_id,  tipo_servicio, fecha_activacion_corte, estado_servicio, motivo)
+        VALUES (?, ?, ?, ?, ?);
+      `;
+
+      const insertEstadosValues = [user_id, tipo_servicios, fecha_activacion_corte, estados, motivo];
+
+      await new Promise((resolve, reject) => {
+        connection.query(insertEstadosQuery, insertEstadosValues, (error, results) => {
+          if (error) return reject(error);
+          resolve(results);
+        });
+      });
+    }
+
+    // Redirigir a la página de actualización del estado del usuario con el ID especificado
+    res.redirect(`/users/actualizarEstado/${user_id}`);
+
+  } catch (error) {
+    console.error('Error al actualizar los datos del usuario:', error);
+    res.status(500).send('Error al actualizar los datos del usuario');
+  }
+});
+
+
+
+router.get('/user-deudas/:userId', requireAuth, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Consulta SQL para obtener las deudas de un usuario específico
+    const selectDebtsQuery = `
+      SELECT *
+      FROM deudas
+      WHERE user_id = ?`;
+
+    // Consulta SQL para obtener los datos del usuario y servicios
+    const selectUserAndServiceQuery = `
+      SELECT u.apellidos, u.nombres, u.direccion, u.dni, 
+             s.estado_cable, s.corte_cable, s.estado_internet, s.corte_internet, 
+             s.fecha_instalacion, s.instalacion_int, SUM(d.deuda) AS deuda_total
+      FROM users u
+      JOIN servicios s ON u.id = s.user_id
+      LEFT JOIN deudas d ON s.user_id = d.user_id
+      WHERE u.id = ?
+      GROUP BY u.apellidos, u.nombres, u.direccion, u.dni, 
+               s.estado_cable, s.corte_cable, s.estado_internet, s.corte_internet, 
+               s.fecha_instalacion, s.instalacion_int`;
+
+    // Ejecutar la consulta a la base de datos para obtener las deudas
+    connection.query(selectDebtsQuery, [userId], (error, debts) => {
+      if (error) {
+        console.error('Error al obtener las deudas del usuario:', error);
+        res.status(500).send('Error al obtener las deudas del usuario');
+        return;
+      }
+      
+      // Ejecutar la consulta a la base de datos para obtener los datos del usuario y servicios
+      connection.query(selectUserAndServiceQuery, [userId], (error, user) => {
+        if (error) {
+          console.error('Error al obtener los datos del usuario:', error);
+          res.status(500).send('Error al obtener los datos del usuario');
+          return;
+        }
+
+        // Renderizar la plantilla HTML con los datos obtenidos de la base de datos
+        res.render('userDebts', { userId, user: user[0], debts });
+      });
+    });
+  } catch (error) {
+    console.error('Error al obtener las deudas del usuario:', error);
+    res.status(500).send('Error al obtener las deudas del usuario');
+  }
+});
 
 
 

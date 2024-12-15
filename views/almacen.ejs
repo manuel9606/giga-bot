@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Actualizar Usuario</title>
+  <style>
+   
+   body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    
+    form {
+      max-width: 420px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 3px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    
+    form h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 12px;
+      color: #666;
+      font-size: 15px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      width: 90%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    
+    textarea {
+      height: 100px;
+    }
+    
+    input[type="submit"] {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    input[type="submit"]:hover {
+      background-color: #083992;
+    }
+
+
+    /* Navegación */
+nav {
+  background-color: #0477f1;
+  padding: 10px 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #0056b3;
+}
+
+  </style>
+
+</head>
+<nav>
+    <ul>
+      <li><a href="/menu">MENÚ</a></li>
+      
+      <!-- Agrega más elementos de lista según tus rutas -->
+    </ul>
+  </nav>
+<body>
+<form action="/almacen" method="post">
+    <label for="nombreMaterial">Nombre del Material:</label><br>
+    <input type="text" id="nombreMaterial" name="nombreMaterial" required><br>
+  
+    <label for="cantidad">Cantidad:</label><br>
+    <input type="number" id="cantidad" name="cantidad" required><br>
+
+    <label for="unidades">Longitud:</label>
+    <select name="unidades" id="unidades">
+      <option value="">Seleccione...</option>
+      <option value="unidad">Unidades</option>
+      <option value="cm">cm</option>
+      <option value="m">metros</option>
+      <option value="km">Km</option>
+      <option value="kg">Kg</option>
+      <option value="otro">Otro</option>
+    </select> 
+    <p></p>
+    <label for="fechaIngreso">Fecha de Ingreso:</label><br>
+    <input type="date" id="fechaIngreso" name="fechaIngreso" required><br>
+
+    <label for="descripcion">Descripción:</label>
+  <textarea name="descripcion" id="descripcion" rows="4" cols="50"></textarea><br>
+  
+    <button type="submit" class="btn-submit">Guardar</button>
+</form>
+</body>
+</html>

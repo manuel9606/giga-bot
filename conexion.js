@@ -19,12 +19,16 @@ app.use(express.static(path.join(__dirname, 'estilos')));
 app.use(express.static(path.join(__dirname, 'scripts')));
 app.use(express.static(path.join(__dirname, 'imagenes')));
 
+
+
+
+
 // Set the views directory
 app.set('views', path.join(__dirname, 'views')); // Ensure this points to your views folder
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use(express.static(path.join(__dirname, 'server')));
 
 app.use(express.static('public'));
 
@@ -61,14 +65,20 @@ app.use(session({
 
 //conexion.js
 
-const connection = require('../private/db');
+const connection = require('./private/db');
 
-const usuarioRouter = require('../routes/crearUsuario'); // Ajusta la ruta según tu estructura
+const usuarioRouter = require('./routes/crearUsuario'); // Ajusta la ruta según tu estructura
 app.use('/', usuarioRouter);
 
-const serviciosRouter = require('../routes/servicios'); // Ajusta la ruta según tu estructura
+const serviciosRouter = require('./routes/servicios'); // Ajusta la ruta según tu estructura
 app.use('/', serviciosRouter);
 
+const almacenRouter = require('./routes/almacen'); // Ajusta la ruta según tu estructura
+app.use('/', almacenRouter);
+
+
+const pagosRouter = require('./routes/pagos'); // Ajusta la ruta según tu estructura
+app.use('/', pagosRouter);
 
 
 // Middleware para bloquear el acceso a la carpeta 'private'
@@ -685,7 +695,17 @@ app.get('/menu', requireAuth, async (req, res) => {
   });
 
 
-
+  app.get('/logout', (req, res) => {
+    // Destruye la sesión
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error al cerrar sesión:', err);
+        res.status(500).send('Error al cerrar sesión');
+      } else {
+        res.redirect('/'); // Redirige a la página de inicio de sesión
+      }
+    });
+  });
   
 
 // Escuchar en el puerto especificado en .env o 3000

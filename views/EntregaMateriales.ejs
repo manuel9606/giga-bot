@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
+
+
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+  
+    form {
+      max-width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+  
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+  
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: calc(100% - 20px);
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  
+    button.btn-submit {
+      background-color: #4CAF50;
+    }
+  
+    button.btn-submit:hover {
+      background-color: #45a049;
+    }
+    header {
+      background-color: #e9e9e9;
+      color: #021894;
+      padding: 20px;
+    }
+    
+    h1 {
+      margin: 0;
+    }
+    
+    /* Navegación */
+nav {
+  background-color: #0477f1;
+  padding: 10px 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #0056b3;
+}
+
+  </style>
+  
+  <head>
+    <nav>
+      <ul>
+        <li><a href="/menu">MENÚ</a></li>
+        
+        
+      </ul>
+    </nav>
+
+  </head>
+  <body>
+
+<form action="/entrega-materiales" method="post">
+    <label for="nombreMaterial">Nombre del Material:</label><br>
+    <select name="nombreMaterial" id="nombreMaterial">
+      <% materiales.forEach(material => { %>
+        <option value="<%= material.nombreMaterial %>"><%= material.nombreMaterial %></option>
+      <% }); %>
+    </select><br>
+    <label for="cantidadEntregada">Cantidad Entregada:</label><br>
+    <input type="number" id="cantidadEntregada" name="cantidadEntregada" required><br>
+
+    <label for="unidades">Longitud:</label><br>
+    <select name="unidades" id="unidades">
+        <option value="">Seleccione...</option>
+        <option value="unidad">Unidades</option>
+        <option value="cm">cm</option>
+        <option value="m">metros</option>
+        <option value="km">Km</option>
+        <option value="kg">Kg</option>
+        <option value="otro">Otro</option>
+    </select>
+
+
+    <label for="fechaSalida">Fecha de Salida:</label><br>
+    <input type="date" id="fechaSalida" name="fechaSalida" required><br>
+   
+    <label for="responsable">Responsable:</label><br>
+        <select name="responsable" id="responsable" required>
+            <option value="">Seleccione...</option>
+            <option value="JOSE CORREA">JOSE CORREA</option>
+            <option value="RICHARD RELUZ">RICHARD RELUZ</option>
+            <option value="JHON">JHON</option>
+            <option value="ROBERTO MISAYCO">ROBERTO MISAYCO</option>
+            <option value="JESUS">JESUS</option>
+            <option value="CARLOS MORALES">CARLOS MORALES</option>
+            <option value="KEVIN RAMIREZ">KEVIN RAMIREZ</option>
+            <option value="JACKSON CEDEÑO">JACKSON CEDEÑO</option>
+            <option value="OTRO">OTRO</option>
+        </select>
+
+        <label for="destino">Destino:</label><br>
+<select name="destino" id="destino" required>
+    <option value="">Seleccione...</option>
+    <option value="villa">Villa</option>
+    <option value="sjm">SJM</option>
+    <option value="nasca">Nasca</option>
+    <option value="marcona">Marcona</option>
+    <option value="huacho">Huacho</option>
+    <option value="lima">Lima</option>
+    <option value="otro">Otro</option>
+</select>
+
+    <label for="descripcion">Descripción:</label><br>
+    <input type="text" id="descripcion" name="descripcion" ><br>
+
+
+    <button type="submit" class="btn-submit">Registrar Entrega</button>
+  </form>
+  
