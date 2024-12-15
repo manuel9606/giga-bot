@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Descargar el código del repositorio
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      # Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # Configurar variables de entorno (opcional)
+      - name: Configurar variables de entorno
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: echo "Variables de entorno configuradas"
+
+      # Construcción y pruebas (si aplican)
+      - name: Build and Test
+        run: |
+          npm run build # Cambia este comando según tu proyecto
+          echo "Pruebas completadas"
+
+      # Desplegar con FTP a cPanel
+      - name: Deploy to cPanel with FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5 # Versión estable recomendada
+        with:
+          server: ${{ secrets.FTP_SERVER }}       # Dirección FTP de tu servidor
+          username: ${{ secrets.FTP_USERNAME }}   # Nombre de usuario FTP
+          password: ${{ secrets.FTP_PASSWORD }}   # Contraseña FTP
+          protocol: ftps                         # Usar FTPS para conexión segura
+          port: ${{ secrets.FTP_PORT }}           # Puerto FTP, asegúrate que esté configurado
+                            # Si deseas desplegar todo el proyecto desde la raíz
+          server-dir: /home/cablesur/cablesurinternet.com/ # Cambia esta ruta según la ubicación en tu servidor cPanel
+
