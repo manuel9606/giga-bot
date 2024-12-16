@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Clientes con Servicio de Cable</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Clientes con Servicio de Cable</h3>
+            <canvas id="clientesCableChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configuración del gráfico de clientes con servicio de cable
+        const ctxCable = document.getElementById('clientesCableChart').getContext('2d');
+        const clientesCableChart = new Chart(ctxCable, {
+            type: 'bar', // Tipo de gráfico (barras)
+            data: {
+                labels: ['Clientes con Cable'], // Etiqueta en el eje X
+                datasets: [{
+                    label: 'Cantidad de Clientes con Cable', // Título de la barra
+                    data: [], // Datos dinámicos, se llenarán con la respuesta de la API
+                    backgroundColor: ['#4CAF50'], // Color de la barra
+                    borderColor: ['#388E3C'], // Color del borde de la barra
+                    borderWidth: 1 // Ancho del borde
+                }]
+            },
+            options: {
+                responsive: true, // Hacer el gráfico responsivo
+                scales: {
+                    y: {
+                        beginAtZero: true // Iniciar el eje Y desde cero
+                    }
+                }
+            }
+        });
+
+        // Obtener datos de la cantidad de clientes con servicio de cable
+        fetch('/clientes-cable')
+            .then(response => response.json())
+            .then(data => {
+                // Asignar los datos al gráfico
+                clientesCableChart.data.datasets[0].data = [data.cantidadCable];
+                clientesCableChart.update(); // Actualizar el gráfico
+            })
+            .catch(error => console.error('Error al obtener los datos de clientes con cable:', error));
+    });
+</script>
+
+</body>
+</html>

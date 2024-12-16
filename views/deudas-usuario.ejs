@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Deudas del Usuario</title>
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    /* Estilos para la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #f2f2f2;
+    }
+
+    /* Estilos para el formulario de ajuste */
+    form {
+      display: inline;
+    }
+
+    form input[type="number"], form input[type="text"], form button {
+      padding: 8px;
+      margin-right: 5px;
+    }
+
+  form button {
+      background-color: #008CBA; /* Cambiado a azul */
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #45a049;
+    }
+
+    /* Mensaje cuando no hay deudas */
+    .no-debts {
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Estilos para el botón de volver al menú */
+    .back-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .back-button a {
+      background-color: #008CBA;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .back-button a:hover {
+      background-color: #007B9A;
+    }
+    
+      /* Estilo para el recordatorio */
+    .reminder {
+      color: #555;
+      font-size: 0.9em;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Deudas de <%= data.nombres %> <%= data.apellidos %> (DNI: <%= data.dni %>)</h1>
+    <p>Direccion: <%= data.direccion %></p>
+    <p>Telefono: <%= data.telefono %></p>
+
+    <h2>Deudas</h2>
+    <% const deudasFiltradas = data.deudas.filter(deuda => deuda.deuda > 0); %>
+    <% if (deudasFiltradas.length > 0) { %>
+     <div class="reminder">
+        <p>Para restar deuda ingrese un monto negativo (ej. -50). Para sumar deuda ingrese un monto positivo (ej. 50).</p>
+          </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Mes</th>
+            <th>Deuda</th>
+            <th>Tipo de Deuda</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% deudasFiltradas.forEach(deuda => { %>
+            <tr>
+              <td><%= deuda.fechaDeuda %></td>
+              <td><%= deuda.mesDeuda %></td>
+              <td><%= deuda.deuda %></td>
+              <td><%= deuda.tipoDeuda %></td>
+              <td>
+                <form action="/user/<%= data.userId %>/debt/<%= deuda.fechaDeuda %>/adjust" method="post" style="display:inline;" onsubmit="return validateForm(this)">
+                    <input type="number" name="amount" step="0.01" placeholder="Monto" required>
+                    <input type="text" name="motivo" placeholder="Motivo de la corrección" required>
+                    <input type="hidden" name="tipoDeuda" value="<%= deuda.tipoDeuda %>">
+                    <button type="submit">Ajustar Deuda</button>
+                  </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>El usuario no tiene deudas pendientes.</p>
+    <% } %>
+
+    <div class="back-button">
+      <a href="/menu">Volver al Menu</a>
+    </div>
+  </div>
+
+
+  <script>
+    function validateForm(form) {
+      const amount = parseFloat(form.amount.value);
+      if (isNaN(amount) || !isFinite(amount)) {
+        alert("El monto debe ser un número válido.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+
+
+</body>
+</html>

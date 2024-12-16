@@ -79,6 +79,23 @@ router.post('/verificar-direccion', (req, res) => {
 });
 
 
+router.post('/verificar-dni', (req, res) => {
+  const { dni } = req.body;
+
+  const checkDniQuery = 'SELECT COUNT(*) AS count FROM users WHERE dni = ?';
+
+  connection.query(checkDniQuery, [dni], (error, results) => {
+      if (error) {
+          console.error('Error al verificar el DNI:', error);
+          return res.status(500).send('Error al verificar el DNI');
+      }
+
+      res.json({ existe: results[0].count > 0 });
+  });
+});
+
+
+
 router.post('/users/agregar', requireAuth, (req, res) => {
   const {
     apellidos,
@@ -115,22 +132,24 @@ router.post('/users/agregar', requireAuth, (req, res) => {
     costo_materiales_internet,
     costo_materiales_cable
   } = req.body;
-  
-  
-  
-   // Asegurarse de que al menos uno de los servicios esté en estado 'Act'
+
+  // Asegurarse de que al menos uno de los servicios esté en estado 'Act'
   if (!hasActiveStatus(estado_cable, estado_internet)) {
     return res.status(400).send('Al menos uno de los servicios debe estar en estado "Act".');
   }
-  
-  
-  
 
-  // Consulta SQL para verificar si la dirección ya existe
-  const checkAddressQuery = `
+ 
+  // Consulta SQL para verificar si la dirección o el DNI ya existen
+  const checkAddressDniQuery = `
+    SELECT COUNT(*) AS count FROM users
+    WHERE direccion = ? OR dni = ?
+  `;
+
+  // Consulta SQL para verificar si el DNI ya existe
+  const checkDniQuery = `
     SELECT COUNT(*) AS count
     FROM users
-    WHERE direccion = ?
+    WHERE dni = ?
   `;
 
   const insertQuery = `
@@ -148,7 +167,6 @@ router.post('/users/agregar', requireAuth, (req, res) => {
   const insertServiciosQuery = `
     INSERT INTO servicios (
       user_id,
-     
       estado_cable,
       servicio,
       fecha_instalacion,
@@ -163,9 +181,6 @@ router.post('/users/agregar', requireAuth, (req, res) => {
       velocidad,
       precio2,
       tipo_onu,
-      
-      
-      
       MAC,
       usuario,
       contrasena,
@@ -196,24 +211,24 @@ router.post('/users/agregar', requireAuth, (req, res) => {
       apellidos,
       nombres,
       direccion,
-      fecha_instalacion  -- Agregar fecha_instalacion a la inserción
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE())  -- Utilizar CURDATE() para la fecha actual
+      fecha_instalacion
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE())
   `;
 
   // Variables para determinar si las fechas deben ser NULL
   const fechaInstalacionValue = fecha_instalacion || null;
   const instalacionIntValue = instalacion_int || null;
 
-  // Ejecutar la consulta para verificar si la dirección ya existe
-  connection.query(checkAddressQuery, [direccion], (checkError, checkResults) => {
+   // Ejecutar la consulta para verificar si la dirección o el DNI ya existen
+   connection.query(checkAddressDniQuery, [direccion, dni], (checkError, checkResults) => {
     if (checkError) {
-      console.error('Error al verificar la dirección:', checkError);
-      return res.status(500).send('Error al verificar la dirección');
+      console.error('Error al verificar la dirección o el DNI:', checkError);
+      return res.status(500).send('Error al verificar la dirección o el DNI');
     }
 
-    // Si la dirección ya existe, devolver un mensaje de error
+    // Si la dirección o el DNI ya existen, devolver un mensaje de error
     if (checkResults[0].count > 0) {
-      return res.status(400).send('La dirección ya existe');
+      return res.status(400).send('La dirección o el DNI ya están registrados');
     }
 
     // Insertar datos en la tabla users
@@ -228,130 +243,136 @@ router.post('/users/agregar', requireAuth, (req, res) => {
 
         console.log('Datos insertados correctamente en la tabla users.');
 
-        // Extraer el ID del usuario insertado
-        const userId = userResults.insertId;
 
-        // Insertar datos en la tabla servicios
-        connection.query(
-          insertServiciosQuery,
-          [
-            userId,
-           
-            estado_cable,
-            servicio,
-            fechaInstalacionValue,
-            senal,
-            tipo_servicio,
-            precio,
-            num_decos || null,
-            descripcion_catv,
-            estado_internet,
-            tipo_servicio2,
-            instalacionIntValue,
-            velocidad,
-            precio2,
-            tipo_onu,
-            MAC,
-            usuario,
-            contrasena,
-            ppp_name,
-            ppp_password,
-            nro_tarjeta,
-            nro_puerto,
-            descripcion_int,
-            nodo,
-            0, // total
-            fechaInstalacionValue, // activacion_cable
-            null, // corte_cable
-            instalacionIntValue, // activacion_internet
-            null, // corte_internet
-            inscripcion_cable,
-            inscripcion_internet,
-            costo_materiales_internet,
-            costo_materiales_cable
-          ],
-          (serviciosError, serviciosResults) => {
-            if (serviciosError) {
-              console.error('Error al insertar datos en la tabla servicios:', serviciosError);
-              return res.status(500).send('Error al registrar el servicio');
-            }
 
-            console.log('Datos insertados correctamente en la tabla servicios.');
 
-            // Bucle para insertar los datos de decos
-            for (let i = 1; i <= num_decos; i++) {
-              const cardNumber = req.body[`card_number_${i}`];
-              const STBId = req.body[`STB_id_${i}`];
-              const nroDeco = req.body[`nro_deco_${i}`];
 
-              // Insertar datos en la tabla decos
-              connection.query(
-                insertDecoQuery,
-                [userId, cardNumber, STBId, nroDeco, apellidos, nombres, direccion],
-                (decoError, decoResults) => {
-                  if (decoError) {
-                    console.error('Error al insertar datos en la tabla decos:', decoError);
-                    return res.status(500).send('Error al registrar los decos');
-                  }
+          // Extraer el ID del usuario insertado
+          const userId = userResults.insertId;
 
-                  console.log('Datos insertados correctamente en la tabla decos.');
-                }
-              );
-            }
-
-            const deudasInserts = [];
-
-            // Agregar datos a deudasInserts si existen
-            if (inscripcion_cable) {
-              const currentDate = fechaInstalacionValue;
-              const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
-              deudasInserts.push([userId, 'inscripcion_catv', inscripcion_cable, currentDate, nombreMes]);
-            }
-
-            if (costo_materiales_cable) {
-              const currentDate = fechaInstalacionValue;
-              const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
-              deudasInserts.push([userId, 'materiales_catv', costo_materiales_cable, currentDate, nombreMes]);
-            }
-
-            if (inscripcion_internet) {
-              const currentDate = instalacionIntValue;
-              const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
-              deudasInserts.push([userId, 'inscripcion_int', inscripcion_internet, currentDate, nombreMes]);
-            }
-
-            if (costo_materiales_internet) {
-              const currentDate = instalacionIntValue;
-              const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
-              deudasInserts.push([userId, 'materiales_int', costo_materiales_internet, currentDate, nombreMes]);
-            }
-
-            // Consulta SQL para insertar datos en la tabla deudas
-            const insertDeudasQuery = `
-              INSERT INTO deudas (user_id, tipo_deuda, deuda, fecha_deuda, mes_deuda)
-              VALUES ?
-            `;
-
-            // Ejecutar la consulta para insertar datos en la tabla deudas
-            connection.query(insertDeudasQuery, [deudasInserts], (deudasError, deudasResults) => {
-              if (deudasError) {
-                console.error('Error al insertar datos en la tabla deudas:', deudasError);
-                return res.status(500).send('Error al registrar las deudas');
+          // Insertar datos en la tabla servicios
+          connection.query(
+            insertServiciosQuery,
+            [
+              userId,
+              estado_cable,
+              servicio,
+              fechaInstalacionValue,
+              senal,
+              tipo_servicio,
+              precio,
+              num_decos || null,
+              descripcion_catv,
+              estado_internet,
+              tipo_servicio2,
+              instalacionIntValue,
+              velocidad,
+              precio2,
+              tipo_onu,
+              MAC,
+              usuario,
+              contrasena,
+              ppp_name,
+              ppp_password,
+              nro_tarjeta,
+              nro_puerto,
+              descripcion_int,
+              nodo,
+              0, // total
+              fechaInstalacionValue, // activacion_cable
+              null, // corte_cable
+              instalacionIntValue, // activacion_internet
+              null, // corte_internet
+              inscripcion_cable,
+              inscripcion_internet,
+              costo_materiales_internet,
+              costo_materiales_cable
+            ],
+            (serviciosError, serviciosResults) => {
+              if (serviciosError) {
+                console.error('Error al insertar datos en la tabla servicios:', serviciosError);
+                return res.status(500).send('Error al registrar el servicio');
               }
 
-              console.log('Datos insertados correctamente en la tabla deudas.');
+              console.log('Datos insertados correctamente en la tabla servicios.');
 
-              // Redireccionar a la página del menú
-              res.render('menu');
-            });
-          }
-        );
-      }
-    );
+              // Bucle para insertar los datos de decos
+              for (let i = 1; i <= num_decos; i++) {
+                const cardNumber = req.body[`card_number_${i}`];
+                const STBId = req.body[`STB_id_${i}`];
+                const nroDeco = req.body[`nro_deco_${i}`];
+
+                // Insertar datos en la tabla decos
+                connection.query(
+                  insertDecoQuery,
+                  [userId, cardNumber, STBId, nroDeco, apellidos, nombres, direccion],
+                  (decoError, decoResults) => {
+                    if (decoError) {
+                      console.error('Error al insertar datos en la tabla decos:', decoError);
+                      return res.status(500).send('Error al registrar los decos');
+                    }
+
+                    console.log('Datos insertados correctamente en la tabla decos.');
+                  }
+                );
+              }
+
+              const deudasInserts = [];
+
+              // Agregar datos a deudasInserts si existen
+              if (inscripcion_cable) {
+                const currentDate = fechaInstalacionValue;
+                const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
+                deudasInserts.push([userId, 'inscripcion_catv', inscripcion_cable, currentDate, nombreMes]);
+              }
+
+              if (costo_materiales_cable) {
+                const currentDate = fechaInstalacionValue;
+                const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
+                deudasInserts.push([userId, 'materiales_catv', costo_materiales_cable, currentDate, nombreMes]);
+              }
+
+              if (inscripcion_internet) {
+                const currentDate = instalacionIntValue;
+                const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
+                deudasInserts.push([userId, 'inscripcion_int', inscripcion_internet, currentDate, nombreMes]);
+              }
+
+              if (costo_materiales_internet) {
+                const currentDate = instalacionIntValue;
+                const nombreMes = currentDate ? obtenerNombreMes(new Date(currentDate).getMonth() + 1) : null;
+                deudasInserts.push([userId, 'materiales_int', costo_materiales_internet, currentDate, nombreMes]);
+              }
+
+              // Consulta SQL para insertar datos en la tabla deudas
+              const insertDeudasQuery = `
+                INSERT INTO deudas (user_id, tipo_deuda, deuda, fecha_deuda, mes_deuda)
+                VALUES ?
+              `;
+
+              // Ejecutar la consulta para insertar datos en la tabla deudas
+              connection.query(insertDeudasQuery, [deudasInserts], (deudasError, deudasResults) => {
+                if (deudasError) {
+                  console.error('Error al insertar datos en la tabla deudas:', deudasError);
+                  return res.status(500).send('Error al registrar las deudas');
+                }
+
+                console.log('Datos insertados correctamente en la tabla deudas.');
+                res.status(200).send('Usuario y servicios registrados correctamente');
+              });
+            }
+          );
+        }
+      );
+    });
   });
-});
 
 
+
+  const hasActiveStatus = (estado_cable, estado_internet) => {
+    return estado_cable === 'Act' || estado_internet === 'Act';
+  };
+  
 
 
 router.get('/deudasMensuales', requireAuth, async (req, res) => {

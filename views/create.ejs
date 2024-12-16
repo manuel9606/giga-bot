@@ -39,10 +39,11 @@
 
               <input type="text" name="apellidos" placeholder="Apellidos (requerido)" required>
               <input type="text" name="nombres" placeholder="Nombres (requerido)" required>
-               <input type="number" name="dni" placeholder="dni (requerido)" required>
-             
-    <input type="text" name="direccion" id="direccion" placeholder="Dirección (requerido)" required oninput="mostrarNodo()">
-      <span id="direccion-error" class="error"></span>
+              <input type="number" name="dni" id="dni" placeholder="DNI o RUC (requerido)" required>
+              <span id="dni-error" class="error"></span>
+  
+              <input type="text" name="direccion" id="direccion" placeholder="Dirección (requerido)" required oninput="mostrarNodo()">
+              <span id="direccion-error" class="error"></span>
     
               <label for="nodo">Nodo:</label>
     <input type="text" id="nodo" name="nodo" readonly>

@@ -131,6 +131,9 @@ function updateActivacionInternet() {
           }
       }
 
+
+
+
 function showThirdForm() {
     document.getElementById('secondForm').classList.add('hidden');
     document.getElementById('thirdForm').classList.remove('hidden');
@@ -322,3 +325,34 @@ function actualizarMensualidad() {
       }
 
 
+// Function to check if the DNI exists before proceeding to the next form
+function verificarDni() {
+    const dni = document.getElementById('dni').value;
+
+    if (!dni) return;
+
+    // Make an AJAX request to verify if the DNI exists
+    fetch('/verificar-dni', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ dni: dni }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.existe) {
+            // Show the error message if DNI exists
+            document.getElementById('dni-error').textContent = 'El numero de documento ya está registrado';
+        } else {
+            // Hide the error message if DNI is valid
+            document.getElementById('dni-error').textContent = '';
+        }
+    })
+    .catch(error => {
+        console.error('Error al verificar el DNI:', error);
+    });
+}
+
+// Call verificarDni function when the user types in the DNI input
+document.getElementById('dni').addEventListener('input', verificarDni);

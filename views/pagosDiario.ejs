@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pagos del Usuario</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Pagos del Usuario</h1>
+
+    <!-- Mostrar mensaje de error si no hay pagos -->
+    <% if (typeof errorMessage !== 'undefined') { %>
+      <div class="alert alert-danger">
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Monto</th>
+          <th>Fecha de Pago</th>
+          <th>Tipo de Deuda</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pagos.forEach(pago => { %>
+          <tr>
+            <td><%= pago.user_id %></td>
+            <td><%= pago.monto %></td>
+            <td><%= new Date(pago.fecha_pago).toLocaleDateString('es-PE') %></td>
+            <td><%= pago.tipo_deuda %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <!-- Formulario para eliminar pagos -->
+    <form action="/delete-payments-today/<%= userId %>" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar los pagos del día actual?');">
+      <button type="submit" class="btn btn-danger">Eliminar Pagos del Día Actual</button>
+    </form>
+
+    <!-- Botón para regresar al menú -->
+    <div class="mt-3">
+      <a href="/menu" class="btn btn-primary">Volver al Menú</a>
+    </div>
+  </div>
+</body>
+</html>

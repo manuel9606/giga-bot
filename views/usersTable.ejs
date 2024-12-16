@@ -101,12 +101,7 @@
         
           <li><a class="dropdown-item btn btn-info btn-pagos" href="/user-payments/<%= user.userId %>">Ver Pagos</a></li>
           
-           <li><button class="dropdown-item btn btn-warning" onclick="sendPlayerWithDebts('<%= user.telefono %>', <%= user.userId %>)">Enviar notificación de Deuda</button></li>
-        <li><button class="dropdown-item btn btn-info" onclick="sendPlayerMessage('<%= user.telefono %>', '<%= user.usuario %>', '<%= user.contrasena %>', '<%= user.tipo_servicio2 %>')">Enviar datos Wi-Fi</button></li>
-        <li><button class="dropdown-item btn btn-danger" onclick="sendPlayerWithDebts2('<%= user.telefono %>', <%= user.userId %>)">Enviar notificación de corte</button></li>
-           
-           
-        <li><a class="dropdown-item btn btn-success btn-pagos" href="/deudas/agregar/<%= user.userId %>">Agregar Deuda/Crédito/Reinstalación</a></li>
+        
        
         <li><a class="dropdown-item btn btn-secondary btn-pagos" href="/user-pagos/<%= user.userId %>">Eliminar Pago</a></li>
        
@@ -114,12 +109,11 @@
         <li><a class="dropdown-item btn btn-secondary btn-estado" href="/users/actualizarEstado/<%= user.userId %>">Activar / Cortar</a></li>
         <li><a class="dropdown-item btn btn-secondary btn-historial" href="/users/verHistorial/<%= user.userId %>">Historial de Act / Bt</a></li>
         <li><a class="dropdown-item btn btn-success btn-pagos" href="/user-deudas/<%= user.userId %>">INFO Usuario</a></li>
-        <li><a class="dropdown-item btn btn-secondary btn-estado" href="/users/agregar-deco/<%= user.userId %>">Agregar Deco Adicional</a></li>
+    
         <li><a class="dropdown-item btn btn-success btn-pagos" href="/export-deudas/<%= user.userId %>">Imprimir Boleta</a></li>
         
        
-       
-        <li><a class="dropdown-item btn btn-danger btn-deudas" href="/user/<%= user.userId %>/debts" style="color: white;">Corregir Deuda</a></li>
+      
     </ul>
 </div>
 

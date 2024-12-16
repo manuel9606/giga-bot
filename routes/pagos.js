@@ -177,30 +177,94 @@ router.get('/user-payments/:userId', requireAuth, async (req, res) => {
   
 
 
-  router.get('/getPagosMensuales', (req, res) => {
-    // Get the selected year from the query parameters, default to current year
-    const year = req.query.year || moment().year(); // Default to the current year
-  
-    const query = `
-      SELECT 
-        MONTH(fecha_pago) AS mes, 
-        tipo_deuda, 
-        SUM(monto) AS total_pago
-      FROM pago
-      WHERE YEAR(fecha_pago) = ? 
-      GROUP BY mes, tipo_deuda
-      ORDER BY mes, tipo_deuda;
-    `;
-  
-    connection.query(query, [year], (err, results) => {
-      if (err) {
-        return res.status(500).send({ error: 'Error al obtener los pagos' });
+// En el controlador o en la ruta donde renderizas la vista
+router.get('/user-pagos/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const pagos = await queryDatabase('SELECT * FROM pago WHERE user_id = ?', [userId]);
+
+    // Aquí estás pasando userId como parte de los datos que se envían a la vista
+    res.render('pagosDiario', { pagos, userId });
+  } catch (error) {
+    console.error('Error al obtener los pagos del usuario:', error);
+    res.status(500).send('Error al obtener los pagos del usuario.');
+  }
+});
+
+
+
+
+router.post('/delete-payments-today/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const fechaActual = moment().tz('America/Lima').format('YYYY-MM-DD');
+
+    // Verificar si hay pagos del día actual
+    const pagosEliminados = await queryDatabase('SELECT * FROM pago WHERE user_id = ? AND DATE(fecha_pago) = ?', [userId, fechaActual]);
+
+    if (pagosEliminados.length === 0) {
+      // No hay pagos del día actual
+      return res.render('pagosDiario', {
+        pagos: await queryDatabase('SELECT * FROM pago WHERE user_id = ?', [userId]),
+        userId,
+        errorMessage: 'No se encontraron pagos del día actual para eliminar.',
+      });
+    }
+
+    // Eliminar los pagos del día actual
+    await queryDatabase('DELETE FROM pago WHERE user_id = ? AND DATE(fecha_pago) = ?', [userId, fechaActual]);
+
+    // Eliminar el monto correspondiente de la tabla adelanto para la fecha actual
+    await queryDatabase('DELETE FROM adelanto WHERE user_id = ? AND DATE(fecha_adelanto) = ?', [userId, fechaActual]);
+
+    // Restablecer las deudas afectadas por los pagos eliminados
+    const deudasRestablecer = [];
+    for (const pago of pagosEliminados) {
+      const deuda = await queryDatabase('SELECT * FROM deudas WHERE user_id = ? AND mes_deuda = ? AND tipo_deuda = ?', [userId, pago.mes_deuda, pago.tipo_deuda]);
+      if (deuda.length > 0) {
+        const nuevaDeuda = deuda[0].deuda + pago.monto;
+        deudasRestablecer.push({ deuda: nuevaDeuda, mes_deuda: deuda[0].mes_deuda, tipo_deuda: deuda[0].tipo_deuda });
       }
-      // Send the results as JSON to be used in the frontend
-      res.json(results);
+    }
+    await restablecerDeudas(userId, deudasRestablecer);
+
+    // Redireccionar con éxito
+    res.redirect(`/user-pagos/${userId}`);
+  } catch (error) {
+    console.error('Error al eliminar los pagos del día actual del usuario:', error);
+    res.status(500).send('Error al eliminar los pagos del día actual del usuario.');
+  }
+});
+
+
+
+// Función para restablecer deudas
+async function restablecerDeudas(userId, deudasRestablecer) {
+  try {
+    for (const deuda of deudasRestablecer) {
+      await queryDatabase('UPDATE deudas SET deuda = ? WHERE user_id = ? AND mes_deuda = ? AND tipo_deuda = ?', [deuda.deuda, userId, deuda.mes_deuda, deuda.tipo_deuda]);
+    }
+  } catch (error) {
+    console.error('Error al restablecer las deudas:', error);
+    throw new Error('Error al restablecer las deudas.');
+  }
+}
+
+// Función para manejar consultas con promesas
+function queryDatabase(query, params) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, params, (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(results);
     });
   });
-  
+}
+
+
+
+
 
 
   module.exports = router;

@@ -9,7 +9,7 @@ const app = express();
 
 const mysql = require('mysql');
 
-
+const moment = require('moment');
 
 app.use(bodyParser.json());
 
@@ -79,6 +79,14 @@ app.use('/', almacenRouter);
 
 const pagosRouter = require('./routes/pagos'); // Ajusta la ruta según tu estructura
 app.use('/', pagosRouter);
+
+
+const correccionesRouter = require('./routes/correcciones'); // Ajusta la ruta según tu estructura
+app.use('/', correccionesRouter);
+
+
+const graficosRouter = require('./routes/graficos'); // Ajusta la ruta según tu estructura
+app.use('/', graficosRouter);
 
 
 // Middleware para bloquear el acceso a la carpeta 'private'
@@ -308,6 +316,17 @@ app.get('/menu', requireAuth, async (req, res) => {
                        {
                        type: "divider"
                     },
+                    
+                     {
+                      type: "list",
+                      title: "Quiero Contratar un Servicio",
+                      event: {
+                        name: "contrato"
+                      }  
+                      },
+                       {
+                       type: "divider"
+                    },
                     {
                       type: "list",
                       title: "Tengo un problema con el servicio",
@@ -425,9 +444,31 @@ app.get('/menu', requireAuth, async (req, res) => {
       });
   }
   
-    
-    
-    
+    else if (intentName === "contrato") {
+   const tipo_servicio = req.body.queryResult.parameters.tipo_servicio;
+   const nombre_usuario = req.body.queryResult.parameters.nombre_usuario;
+   const direccion = req.body.queryResult.parameters.direccion;
+   const telefono = req.body.queryResult.parameters.telefono;
+
+   // Insertar en la base de datos
+   const query = `
+     INSERT INTO chatbot_contratos (tipo_servicio, nombre_usuario, direccion, telefono)
+     VALUES (?, ?, ?, ?)
+   `;
+   connection.query(query, [tipo_servicio, nombre_usuario, direccion, telefono], (err, result) => {
+     if (err) {
+       console.error("Error al insertar datos:", err);
+       return res.json({
+         fulfillmentText: "Hubo un error al registrar tu contrato. Por favor, inténtalo más tarde.",
+       });
+     }
+
+     console.log("Contrato registrado correctamente:", result);
+     return res.json({
+       fulfillmentText: `Gracias ${nombre_usuario}, hemos registrado tu contrato para el servicio de ${tipo_servicio}.`,
+     });
+   });
+ } 
     
     else if (intentName === 'consulta_deuda') {
       // Obtener el DNI del usuario desde los parámetros de la solicitud
@@ -683,8 +724,43 @@ app.get('/menu', requireAuth, async (req, res) => {
   
   
   
-   
-   
+  app.get('/reportes-averias', requireAuth, (req, res) => {
+    // Consultar todos los campos de los reportes de averías ordenados por fecha de reporte
+    const query = 'SELECT servicio, comentario, direccion, telefono, DATE_FORMAT(fecha_reporte, "%Y-%m-%d %H:%i") AS fecha_reporte FROM reportes_averias ORDER BY fecha_reporte DESC';
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta: ' + error.message);
+        return res.status(500).send('Error interno del servidor');
+      }
+  
+      // Renderizar la página HTML con los reportes de averías en una tabla
+      res.render('reportes_averias', { reportes: results });
+    });
+  });
+  
+  
+
+// Ruta para obtener los contratos desde la base de datos
+app.get('/contratos', requireAuth, (req, res) => {
+  const query = 'SELECT * FROM chatbot_contratos';
+
+  connection.query('SELECT tipo_servicio, nombre_usuario, direccion, telefono, fecha_registro FROM chatbot_contratos', (err, result) => {
+    if (err) {
+      console.error("Error al obtener contratos:", err);
+      return res.json({
+        fulfillmentText: "Hubo un error al obtener los contratos. Por favor, inténtalo más tarde.",
+      });
+    }
+  
+    // Formatear la fecha de registro en el formato deseado
+    result.forEach(contrato => {
+      contrato.fecha_registro = moment(contrato.fecha_registro).format('YYYY-MM-DD HH:mm');
+    });
+  
+    // Pasar los contratos a la vista
+    res.render('contratos', { contratos: result });
+  });
+});
    
    app.get('/dialogflow-config', (req, res) => {
     res.json({
@@ -702,11 +778,35 @@ app.get('/menu', requireAuth, async (req, res) => {
         console.error('Error al cerrar sesión:', err);
         res.status(500).send('Error al cerrar sesión');
       } else {
-        res.redirect('/'); // Redirige a la página de inicio de sesión
+        res.redirect('/'); // Redirige a la página de inicio de sesióngit status
       }
     });
   });
   
+
+
+// Ruta para obtener el total de 'cable' desde la columna correspondiente
+app.get('/grafico-servicios', requireAuth, (req, res) => {
+  const query = `
+    SELECT 
+      'cable' AS servicio, 
+      COUNT(*) AS total
+    FROM servicios
+    WHERE servicio = 'cable'
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta: ' + error.message);
+      return res.status(500).send('Error interno del servidor');
+    }
+
+    // Enviar los datos al frontend para el gráfico
+    res.render('grafico_servicios', { data: results });
+  });
+});
+
+
 
 // Escuchar en el puerto especificado en .env o 3000
 const PORT = process.env.PORT || 3000;
