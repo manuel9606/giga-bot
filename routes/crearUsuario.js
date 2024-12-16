@@ -1176,7 +1176,7 @@ router.post('/users/editar/:id', requireAuth, (req, res) => {
 });
 
 // Ruta GET para obtener los datos del servicio y mostrar el formulario de actualización
-app.get('/servicios/actualizarVEL/:id', requireAuth, async (req, res) => {
+router.get('/servicios/actualizarVEL/:id', requireAuth, async (req, res) => {
   const servicioId = req.params.id;
 
   // Consulta SQL para obtener los datos del servicio desde la tabla servicios
@@ -1224,7 +1224,7 @@ app.get('/servicios/actualizarVEL/:id', requireAuth, async (req, res) => {
 
 
 
-app.post('/servicios/actualizarVEL', async (req, res) => {
+router.post('/servicios/actualizarVEL', async (req, res) => {
   let { user_id, velocidad, precio2, tipo_onu, MAC, usuario, contrasena, ppp_name, ppp_password, nro_tarjeta, nro_puerto, descripcion_int } = req.body;
 
   try {
