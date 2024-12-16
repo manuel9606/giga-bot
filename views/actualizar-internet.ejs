@@ -188,13 +188,19 @@ nav a:hover {
 
     
     
-<label for="velocidad">Velocidad:</label>
-<select name="velocidad" id="velocidad" onchange="actualizarPrecio()" required>
-  <option value="">Seleccione...</option>
-  <% velocidades.forEach(vel => { %>
-    <option value="<%= vel.velocidad %>" data-precio="<%= vel.precio %>"><%= vel.velocidad %></option>
-  <% }) %>
-</select>
+  <label for="velocidad">Velocidad:</label>
+  <select name="velocidad" id="velocidad" onchange="actualizarPrecio()" required>
+    <option value="">Seleccione...</option>
+    <% velocidades.forEach(vel => { %>
+      <option 
+        value="<%= vel.velocidad %>" 
+        data-precio="<%= vel.precio %>" 
+        <%= user.velocidad === vel.velocidad ? 'selected' : '' %>>
+        <%= vel.velocidad %>
+      </option>
+    <% }) %>
+  </select>
+  
 
             <p></p>
             <label for="precio2">Mensualidad:</label>

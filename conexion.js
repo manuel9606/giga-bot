@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const ejs = require('ejs');
 const app = express();
-
+const bcrypt = require('bcrypt');
 
 const mysql = require('mysql');
 
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'scripts')));
 app.use(express.static(path.join(__dirname, 'imagenes')));
 
 
-
+const saltRounds = 10;
 
 
 // Set the views directory
@@ -60,7 +60,25 @@ app.use(session({
 
 
 
-
+  // Middleware para verificar si el usuario es 'admin'
+  function verificarRolAdmin(req, res, next) {
+    if (req.session.usuario) {
+      const selectQuery = 'SELECT rol FROM login1 WHERE username = ?';
+      connection.query(selectQuery, [req.session.usuario], (error, results) => {
+        if (error) {
+          console.error('Error al verificar rol:', error);
+          return res.status(500).send('Error al verificar rol');
+        }
+        if (results.length > 0 && results[0].rol === 'admin') {
+          return next(); // El usuario tiene rol 'admin', continuar con la ruta
+        } else {
+          return res.status(403).send('Acceso denegado. Rol no autorizado.');
+        }
+      });
+    } else {
+      res.redirect('/');
+    }
+  }
 
 
 //conexion.js
@@ -115,35 +133,74 @@ app.get('/', (req, res) => {
 
 
     
-// Ruta de inicio de sesión (formulario de inicio de sesión)
-app.get('/home', (req, res) => {
-    res.sendFile(__dirname + '/login1.html');
-  });
-
-  app.post('/login1', async (req, res) => {
-    const { username, password } = req.body;
-  
-    try {
-      const selectQuery = 'SELECT * FROM login1 WHERE username = ? AND password = ?';
-      connection.query(selectQuery, [username, password], async (error, results) => {
-        if (error) {
-          console.error('Error al ejecutar la consulta:', error);
-          res.status(500).send('Error al autenticar al usuario');
-        } else {
-          if (results.length > 0) {
-            req.session.usuario = username;
-            req.session.password= password;  // Establece la sesión de usuario_id
-            res.redirect('/menu');
+    app.get('/home', (req, res) => {
+      res.sendFile(__dirname + '/login1.html');
+    });
+    
+    app.post('/login1', async (req, res) => {
+      const { username, password } = req.body;
+    
+      try {
+        const selectQuery = 'SELECT * FROM login1 WHERE username = ?';
+        connection.query(selectQuery, [username], async (error, results) => {
+          if (error) {
+            console.error('Error al ejecutar la consulta:', error);
+            res.status(500).send('Error al autenticar al usuario');
           } else {
-            res.status(401).send('Credenciales inválidas');
+            if (results.length > 0) {
+              const user = results[0];
+              
+              // Comparar la contraseña ingresada con el hash almacenado
+              const passwordMatch = await bcrypt.compare(password, user.password);
+              if (passwordMatch) {
+                // Contraseña correcta, establecer la sesión
+                req.session.usuario = username;
+                req.session.password = user.password; // Esto guarda el hash en la sesión
+                res.redirect('/menu');
+              } else {
+                res.status(401).send('Credenciales inválidas');
+              }
+            } else {
+              res.status(401).send('Credenciales inválidas');
+            }
           }
-        }
-      });
-    } catch (error) {
-      console.error('Error al ejecutar la consulta:', error);
-      res.status(500).send('Error al autenticar al usuario');
-    }
-  });
+        });
+      } catch (error) {
+        console.error('Error al autenticar al usuario:', error);
+        res.status(500).send('Error al autenticar al usuario');
+      }
+    });
+
+
+
+    app.get('/registro', verificarRolAdmin, (req, res) => {
+      res.render('registro');  // Aquí renderizas el archivo registro.ejs
+    });
+    
+
+    app.post('/registro', async (req, res) => {
+      const { nombre, username, password, rol } = req.body;
+    
+      try {
+        // Encriptar la contraseña
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+        // Insertar el nuevo usuario en la base de datos
+        const insertQuery = 'INSERT INTO login1 (nombre, username, password, rol) VALUES (?, ?, ?, ?)';
+        connection.query(insertQuery, [nombre, username, hashedPassword, rol], (error, results) => {
+          if (error) {
+            console.error('Error al registrar usuario:', error);
+            res.status(500).send('Error al registrar usuario');
+          } else {
+            res.redirect('/registro');
+          }
+        });
+      } catch (error) {
+        console.error('Error al procesar el registro:', error);
+        res.status(500).send('Error al procesar el registro');
+      }
+    });
+    
   
   
   // Manejar la solicitud POST del formulario de inicio de sesión

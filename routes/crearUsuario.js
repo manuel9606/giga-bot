@@ -45,10 +45,27 @@ router.use(session({
 }));
 
 
+function verificarRolEmpleadoYAdmin(req, res, next) {
+  if (req.session.usuario) {
+    const selectQuery = 'SELECT rol FROM login1 WHERE username = ?';
+    connection.query(selectQuery, [req.session.usuario], (error, results) => {
+      if (error) {
+        console.error('Error al verificar rol:', error);
+        return res.status(500).send('Error al verificar rol');
+      }
+      if (results.length > 0 && (results[0].rol === 'empleado' || results[0].rol === 'admin')) {
+        return next(); // El usuario tiene rol 'empleado' o 'admin', continuar con la ruta
+      } else {
+        return res.status(403).send('Acceso denegado. Rol no autorizado.');
+      }
+    });
+  } else {
+    return res.status(401).send('No autenticado. Por favor, inicia sesión.');
+  }
+}
 
 
-
-router.get('/users/agregar', requireAuth, (req, res) => {
+router.get('/users/agregar', requireAuth,verificarRolEmpleadoYAdmin, (req, res) => {
   const getVelocidadesQuery = 'SELECT velocidad, precio FROM velocidades';
 
   connection.query(getVelocidadesQuery, (error, results) => {
@@ -396,7 +413,7 @@ router.get('/deudasMensuales', requireAuth, async (req, res) => {
 
 
 
-router.get('/users', requireAuth, async (req, res) => {
+router.get('/users', requireAuth, verificarRolEmpleadoYAdmin, async (req, res) => {
   try {
     // Aplicar adelantos en las deudas por usuario antes de obtener los datos de los usuarios
     await aplicarAdelantosEnDeudasPorUsuario();

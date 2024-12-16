@@ -17,7 +17,25 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
-
+// Middleware para verificar si el usuario es 'almacen'
+function verificarRolAlmacen(req, res, next) {
+  if (req.session.usuario) {
+    const selectQuery = 'SELECT rol FROM login1 WHERE username = ?';
+    connection.query(selectQuery, [req.session.usuario], (error, results) => {
+      if (error) {
+        console.error('Error al verificar rol:', error);
+        return res.status(500).send('Error al verificar rol');
+      }
+      if (results.length > 0 && (results[0].rol === 'almacen' || results[0].rol === 'admin')) {
+        return next(); // El usuario tiene rol 'almacen' o 'admin', continuar con la ruta
+      } else {
+        return res.status(403).send('Acceso denegado. Rol no autorizado.');
+      }
+    });
+  } else {
+    res.redirect('/');  // Redirige al inicio si no está autenticado
+  }
+}
 
 // Middleware de autenticación
 function requireAuth(req, res, next) {
@@ -44,7 +62,7 @@ const connection = require('../private/db');
 
 
 
-router.get('/almacen',  requireAuth, async (req, res) => {
+router.get('/almacen',  requireAuth, verificarRolAlmacen, async (req, res) => {
   res.render('almacen'); // 'formularioAlmacen' es el nombre de la plantilla para el formulario
 });
 
@@ -110,7 +128,7 @@ router.post('/almacen', requireAuth, async (req, res) => {
 
 
 
-router.get('/materiales', requireAuth, (req, res) => {
+router.get('/materiales', requireAuth,verificarRolAlmacen, (req, res) => {
   // Consulta SQL para obtener los datos del almacén
   const selectQuery = 'SELECT * FROM almacen';
 
@@ -128,7 +146,7 @@ router.get('/materiales', requireAuth, (req, res) => {
 });
 
 
-router.get('/materialesIngreso', requireAuth, (req, res) => {
+router.get('/materialesIngreso', requireAuth,verificarRolAlmacen, (req, res) => {
  // Consulta SQL para obtener los datos del almacén
  const selectQuery = 'SELECT * FROM materiales';
 
@@ -204,7 +222,7 @@ router.post('/entrega-materiales', requireAuth, async (req, res) => {
 
 
   
- router.get('/entrega-materiales', requireAuth, (req, res) => {
+ router.get('/entrega-materiales', requireAuth, verificarRolAlmacen, (req, res) => {
  
    // Consulta SQL para obtener los datos del almacén
  const selectQuery = 'SELECT * FROM almacen';
@@ -316,7 +334,7 @@ router.post('/almacen/eliminar', requireAuth, (req, res) => {
 
 
 
-router.get('/entregas', requireAuth, (req, res) => {
+router.get('/entregas', requireAuth, verificarRolAlmacen, (req, res) => {
   const selectQuery = 'SELECT * FROM Entregas';
 
   connection.query(selectQuery, (error, results) => {
@@ -334,7 +352,7 @@ router.get('/entregas', requireAuth, (req, res) => {
 
 
 
-router.get('/ver-entregas-materiales', requireAuth, (req, res) => {
+router.get('/ver-entregas-materiales', requireAuth, verificarRolAlmacen, (req, res) => {
   const selectQuery = 'SELECT * FROM Entregas';
 
   connection.query(selectQuery, (error, results) => {
@@ -363,7 +381,7 @@ router.get('/ver-entregas-materiales', requireAuth, (req, res) => {
 
 
 
-router.get('/materiales-dia', requireAuth, (req, res) => {
+router.get('/materiales-dia', requireAuth, verificarRolAlmacen,(req, res) => {
   const selectQuery = 'SELECT * FROM Entregas';
 
   connection.query(selectQuery, (error, results) => {
@@ -406,7 +424,7 @@ router.get('/materiales-dia', requireAuth, (req, res) => {
 
 
 
-router.get('/materiales-responsable', requireAuth, (req, res) => {
+router.get('/materiales-responsable', requireAuth,verificarRolAlmacen, (req, res) => {
   const selectedResponsable = req.query.responsable; // Obtener el responsable seleccionado del query string
 
   let query = 'SELECT * FROM Entregas';
