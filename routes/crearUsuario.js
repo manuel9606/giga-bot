@@ -1087,4 +1087,226 @@ router.get('/user-deudas/:userId', requireAuth, async (req, res) => {
 
 
 
+
+// Ruta GET para obtener los datos del usuario y mostrar el formulario de actualización
+router.get('/users/actualizarDatos/:id', requireAuth, async (req, res) => {
+  const userId = req.params.id;
+
+  // Consulta SQL para obtener los datos del usuario desde la tabla users
+  const selectQuery = 'SELECT * FROM users WHERE id = ?';
+
+  // Ejecutar la consulta a la base de datos
+  connection.query(selectQuery, [userId], (error, results) => {
+    if (error) {
+      console.error('Error al obtener los datos del usuario:', error);
+      res.status(500).send('Error al obtener los datos del usuario');
+    } else {
+      // Comprobar si se encontraron resultados
+      if (results.length > 0) {
+        const user = results[0];
+        res.render('users', { user: user }); // Pasa los datos del usuario a la plantilla
+      } else {
+        res.send('No se encontró ningún usuario con el ID especificado');
+      }
+    }
+  });
+});
+
+
+
+
+
+router.post('/users/editar/:id', requireAuth, (req, res) => {
+  const userId = req.params.id;
+  const { apellidos, nombres, direccion, telefono, dni, vivienda, nodo } = req.body;
+
+  const getUserDireccionQuery = 'SELECT direccion FROM users WHERE id = ?';
+
+  connection.query(getUserDireccionQuery, [userId], (error, results) => {
+    if (error) {
+      console.error('Error fetching user address:', error);
+      return res.status(500).send('Error fetching user address');
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    const direccionAnterior = results[0].direccion;
+
+    const updateUserQuery = `
+      UPDATE users
+      SET apellidos = ?, nombres = ?, direccion = ?, telefono = ?, dni = ?, vivienda = ?, nodo = ?
+      WHERE id = ?
+    `;
+
+    connection.query(
+      updateUserQuery,
+      [apellidos, nombres, direccion, telefono, dni, vivienda, nodo, userId],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating user data:', error);
+          return res.status(500).send('Error updating user data');
+        }
+
+        if (results.affectedRows === 0) {
+          return res.status(404).send('User not found');
+        }
+
+        const insertTrasladoQuery = `
+          INSERT INTO traslado (user_id, direccion_anterior, direccion_nueva)
+          VALUES (?, ?, ?)
+        `;
+
+        connection.query(
+          insertTrasladoQuery,
+          [userId, direccionAnterior, direccion],
+          (error, results) => {
+            if (error) {
+              console.error('Error logging address change:', error);
+              return res.status(500).send('Error logging address change');
+            }
+
+            res.redirect('/users'); // Redirige al menú después de actualizar
+          }
+        );
+      }
+    );
+  });
+});
+
+// Ruta GET para obtener los datos del servicio y mostrar el formulario de actualización
+app.get('/servicios/actualizarVEL/:id', requireAuth, async (req, res) => {
+  const servicioId = req.params.id;
+
+  // Consulta SQL para obtener los datos del servicio desde la tabla servicios
+  const selectServicioQuery = 'SELECT * FROM servicios WHERE user_id = ?';
+
+  // Consulta SQL para obtener las velocidades disponibles desde la tabla velocidades
+  const selectVelocidadesQuery = 'SELECT velocidad, precio FROM velocidades';
+
+  // Ejecutar ambas consultas en paralelo usando Promise.all
+  try {
+    const [servicioResults, velocidadesResults] = await Promise.all([
+      new Promise((resolve, reject) => {
+        connection.query(selectServicioQuery, servicioId, (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+      new Promise((resolve, reject) => {
+        connection.query(selectVelocidadesQuery, (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      })
+    ]);
+
+    // Verificar si se encontraron resultados para el servicio
+    if (servicioResults.length > 0) {
+      const user = servicioResults[0];
+      res.render('actualizar-internet', { user: user, velocidades: velocidadesResults });
+    } else {
+      res.send('No se encontró ningún servicio con el ID especificado');
+    }
+  } catch (error) {
+    console.error('Error al obtener los datos del servicio y las velocidades:', error);
+    res.status(500).send('Error al obtener los datos del servicio y las velocidades');
+  }
+});
+
+
+
+
+app.post('/servicios/actualizarVEL', async (req, res) => {
+  let { user_id, velocidad, precio2, tipo_onu, MAC, usuario, contrasena, ppp_name, ppp_password, nro_tarjeta, nro_puerto, descripcion_int } = req.body;
+
+  try {
+    // Consulta para actualizar los datos del servicio de internet en la tabla servicios
+    const updateQuery = `
+      UPDATE servicios
+      SET 
+        velocidad = ?,
+        precio2 = ?,
+        tipo_onu = ?,
+        MAC = ?,
+        usuario = ?,
+        contrasena = ?,
+        ppp_name = ?,
+        ppp_password = ?,
+        nro_tarjeta = ?,
+        nro_puerto = ?,
+        descripcion_int = ?
+      WHERE user_id = ?;
+    `;
+
+    // Valores a actualizar en la base de datos
+    const updateValues = [
+      velocidad,
+      precio2,
+      tipo_onu,
+      MAC,
+      usuario,
+      contrasena,
+      ppp_name,
+      ppp_password,
+      nro_tarjeta,
+      nro_puerto,
+      descripcion_int,
+      user_id
+    ];
+
+    // Ejecutar la consulta de actualización
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, updateValues, async (error, results) => {
+        if (error) return reject(error);
+
+        // Insertar los datos actualizados en la tabla planes_actualizados junto con la fecha actual
+        const insertQuery = `
+          INSERT INTO planes_actualizados (user_id, velocidad, precio2, tipo_onu, MAC, usuario, contrasena, ppp_name, ppp_password, nro_tarjeta, nro_puerto, descripcion_int, fecha_actualizacion)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());
+        `;
+
+        const insertValues = [
+          user_id,
+          velocidad,
+          precio2,
+          tipo_onu,
+          MAC,
+          usuario,
+          contrasena,
+          ppp_name,
+          ppp_password,
+          nro_tarjeta,
+          nro_puerto,
+          descripcion_int
+        ];
+
+        connection.query(insertQuery, insertValues, (insertError, insertResults) => {
+          if (insertError) return reject(insertError);
+
+          resolve(results); // Resuelve la promesa principal una vez que todo esté completado
+        });
+      });
+    });
+
+    // Redireccionar a la página del menú o alguna otra página deseada después de la actualización
+    res.redirect('/users');
+
+  } catch (error) {
+    console.error('Error al actualizar los datos del servicio de internet:', error);
+    res.status(500).send('Error al actualizar los datos del servicio de internet');
+  }
+});
+
+
+
+
+
 module.exports = router;
